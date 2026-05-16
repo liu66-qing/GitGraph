@@ -16,17 +16,14 @@ class KeywordRetriever:
     async def retrieve(
         self, query: str, n_results: int = 10
     ) -> list[dict[str, Any]]:
-        all_docs = vector_store.collection.get(
-            limit=1000,
-            include=["documents", "metadatas"],
-        )
+        all_docs = vector_store.get_all_documents(limit=1000)
 
-        if not all_docs or not all_docs.get("documents"):
+        if not all_docs:
             return []
 
-        documents = all_docs["documents"]
-        metadatas = all_docs["metadatas"]
-        ids = all_docs["ids"]
+        documents = [d["text"] for d in all_docs]
+        metadatas = [d["metadata"] for d in all_docs]
+        ids = [d["id"] for d in all_docs]
 
         tokenized_docs = [doc.lower().split() for doc in documents]
         bm25 = BM25Okapi(tokenized_docs)

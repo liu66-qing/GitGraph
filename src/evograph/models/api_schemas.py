@@ -149,7 +149,7 @@ class HealthResponse(BaseModel):
     neo4j: str
     postgres: str
     redis: str
-    chromadb: str
+    qdrant: str
 
 
 class GraphStats(BaseModel):

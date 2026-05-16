@@ -11,16 +11,23 @@ class Settings(BaseSettings):
     app_port: int = 8080
     secret_key: str = "change-me-in-production"
 
-    # LLM
-    openai_api_key: str = ""
-    openai_base_url: str = "https://api.openai.com/v1"
-    openai_model: str = "gpt-4o"
-    embedding_model: str = "text-embedding-3-small"
+    # LLM (DeepSeek / OpenAI-compatible)
+    llm_api_key: str = ""
+    llm_base_url: str = "https://api.deepseek.com"
+    llm_model_id: str = "deepseek-chat"
+
+    # Embedding (DashScope / OpenAI-compatible)
+    embed_model_type: str = "dashscope"  # dashscope | openai
+    embed_model_name: str = "text-embedding-v3"
+    embed_api_key: str = ""
+    embed_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    embed_dimensions: int = 1024
 
     # Neo4j
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_user: str = "neo4j"
     neo4j_password: str = "evograph123"
+    neo4j_database: str = "neo4j"
 
     # PostgreSQL
     database_url: str = "postgresql+asyncpg://evograph:evograph123@localhost:5432/evograph"
@@ -28,9 +35,13 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://localhost:6379/0"
 
-    # ChromaDB
-    chroma_host: str = "localhost"
-    chroma_port: int = 8000
+    # Qdrant
+    qdrant_url: str = "http://localhost:6333"
+    qdrant_api_key: str = ""
+    qdrant_collection: str = "evograph_chunks"
+    qdrant_vector_size: int = 1024
+    qdrant_distance: str = "cosine"
+    qdrant_timeout: int = 30
 
     # Celery
     celery_broker_url: str = "redis://localhost:6379/1"

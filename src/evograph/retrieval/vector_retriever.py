@@ -1,4 +1,4 @@
-"""Vector-based retriever using ChromaDB."""
+"""Vector-based retriever using Qdrant."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from typing import Any
 
 import structlog
 
-from evograph.llm.client import llm_client
+from evograph.llm.embedding import embedding_client
 from evograph.storage.vector_store import vector_store
 
 logger = structlog.get_logger()
@@ -19,7 +19,7 @@ class VectorRetriever:
         n_results: int = 10,
         document_ids: list[str] | None = None,
     ) -> list[dict[str, Any]]:
-        query_embedding = await llm_client.embed_single(query)
+        query_embedding = await embedding_client.embed_single(query)
 
         where_filter = None
         if document_ids:
@@ -32,20 +32,14 @@ class VectorRetriever:
         )
 
         retrieved = []
-        if results and results.get("documents"):
-            docs = results["documents"][0]
-            metadatas = results["metadatas"][0] if results.get("metadatas") else [{}] * len(docs)
-            distances = results["distances"][0] if results.get("distances") else [0.0] * len(docs)
-            ids = results["ids"][0] if results.get("ids") else [""] * len(docs)
-
-            for doc, meta, dist, chunk_id in zip(docs, metadatas, distances, ids):
-                retrieved.append({
-                    "chunk_id": chunk_id,
-                    "text": doc,
-                    "document_id": meta.get("document_id", ""),
-                    "position": meta.get("position", 0),
-                    "score": 1.0 - dist,  # cosine distance to similarity
-                })
+        for hit in results:
+            retrieved.append({
+                "chunk_id": hit["id"],
+                "text": hit["text"],
+                "document_id": hit["metadata"].get("document_id", ""),
+                "position": hit["metadata"].get("position", 0),
+                "score": hit["score"],
+            })
 
         logger.info("vector_retriever", query_len=len(query), results=len(retrieved))
         return retrieved

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import structlog
 
-from evograph.llm.client import llm_client
+from evograph.llm.embedding import embedding_client
 
 logger = structlog.get_logger()
 
@@ -92,7 +92,7 @@ async def embed_chunks(chunks: list[dict]) -> list[dict]:
 
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
-        embeddings = await llm_client.embed(batch)
+        embeddings = await embedding_client.embed(batch)
         all_embeddings.extend(embeddings)
 
     for chunk, embedding in zip(chunks, all_embeddings):

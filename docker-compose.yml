@@ -38,16 +38,6 @@ services:
       interval: 5s
       retries: 5
 
-  chromadb:
-    image: chromadb/chroma:0.5.23
-    ports:
-      - "8000:8000"
-    volumes:
-      - chroma_data:/chroma/chroma
-    environment:
-      ANONYMIZED_TELEMETRY: "false"
-
 volumes:
   neo4j_data:
   postgres_data:
-  chroma_data:

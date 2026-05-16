@@ -16,12 +16,12 @@ router = APIRouter()
 async def health_check() -> HealthResponse:
     neo4j_ok = await neo4j_client.health_check()
     redis_ok = await redis_client.health_check()
-    chroma_ok = vector_store.health_check()
+    qdrant_ok = vector_store.health_check()
 
     return HealthResponse(
-        status="healthy" if all([neo4j_ok, redis_ok, chroma_ok]) else "degraded",
+        status="healthy" if all([neo4j_ok, redis_ok, qdrant_ok]) else "degraded",
         neo4j="ok" if neo4j_ok else "error",
         postgres="ok",  # TODO: actual check
         redis="ok" if redis_ok else "error",
-        chromadb="ok" if chroma_ok else "error",
+        qdrant="ok" if qdrant_ok else "error",
     )

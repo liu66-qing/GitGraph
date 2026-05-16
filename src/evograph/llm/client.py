@@ -1,11 +1,10 @@
-"""Unified LLM client supporting OpenAI-compatible APIs."""
+"""Unified LLM client supporting OpenAI-compatible APIs (DeepSeek, etc.)."""
 
 from __future__ import annotations
 
 from typing import Any
 
 from openai import AsyncOpenAI
-from pydantic import BaseModel
 import structlog
 
 from evograph.config import settings
@@ -16,10 +15,10 @@ logger = structlog.get_logger()
 class LLMClient:
     def __init__(self) -> None:
         self._client = AsyncOpenAI(
-            api_key=settings.openai_api_key,
-            base_url=settings.openai_base_url,
+            api_key=settings.llm_api_key,
+            base_url=settings.llm_base_url,
         )
-        self._model = settings.openai_model
+        self._model = settings.llm_model_id
 
     async def chat(
         self,
@@ -50,17 +49,6 @@ class LLMClient:
             temperature=temperature,
             response_format={"type": "json_object"},
         )
-
-    async def embed(self, texts: list[str]) -> list[list[float]]:
-        response = await self._client.embeddings.create(
-            model=settings.embedding_model,
-            input=texts,
-        )
-        return [item.embedding for item in response.data]
-
-    async def embed_single(self, text: str) -> list[float]:
-        embeddings = await self.embed([text])
-        return embeddings[0]
 
     async def stream_chat(
         self,

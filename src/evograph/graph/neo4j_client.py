@@ -38,7 +38,7 @@ class Neo4jClient:
         return self._driver
 
     def session(self) -> AsyncSession:
-        return self.driver.session()
+        return self.driver.session(database=settings.neo4j_database)
 
     async def execute_query(
         self, query: str, parameters: dict[str, Any] | None = None
