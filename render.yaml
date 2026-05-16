@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: evograph-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        sync: false
+      - key: LLM_MODEL_ID
+        sync: false
+      - key: EMBED_MODEL_TYPE
+        sync: false
+      - key: EMBED_MODEL_NAME
+        sync: false
+      - key: EMBED_API_KEY
+        sync: false
+      - key: EMBED_BASE_URL
+        sync: false
+      - key: EMBED_DIMENSIONS
+        sync: false
+      - key: NEO4J_URI
+        sync: false
+      - key: NEO4J_USER
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: NEO4J_DATABASE
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: QDRANT_COLLECTION
+        sync: false
+      - key: QDRANT_VECTOR_SIZE
+        sync: false
+      - key: QDRANT_DISTANCE
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
