@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" width="1200" height="650">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="650" fill="url(#bg)" rx="12"/>
+
+  <!-- Header -->
+  <text x="60" y="45" font-family="system-ui" font-size="16" font-weight="700" fill="#e2e8f0">Query Console</text>
+
+  <!-- Chat area -->
+  <rect x="40" y="70" width="750" height="520" fill="#1e293b" rx="8"/>
+
+  <!-- User message -->
+  <rect x="400" y="90" width="370" height="50" rx="12" fill="#3b82f6" opacity="0.2"/>
+  <text x="420" y="115" font-family="system-ui" font-size="13" fill="#93c5fd">伊朗和以色列的冲突是怎么升级的？各方什么立场？</text>
+
+  <!-- AI response -->
+  <rect x="60" y="160" width="700" height="200" rx="12" fill="#334155"/>
+  <text x="80" y="185" font-family="system-ui" font-size="12" fill="#e2e8f0" font-weight="600">PulseGraph Analysis</text>
+  <text x="80" y="210" font-family="system-ui" font-size="11" fill="#cbd5e1">2024年伊以冲突升级链：</text>
+  <text x="80" y="232" font-family="system-ui" font-size="11" fill="#94a3b8">1. 以色列空袭伊朗驻叙利亚大使馆 (2024-04-01)</text>
+  <text x="80" y="254" font-family="system-ui" font-size="11" fill="#94a3b8">2. 伊朗发射300+导弹报复 (2024-04-13)</text>
+  <text x="80" y="276" font-family="system-ui" font-size="11" fill="#94a3b8">3. 美国协助以色列拦截，重申同盟立场</text>
+  <text x="80" y="298" font-family="system-ui" font-size="11" fill="#94a3b8">4. 中俄谴责以色列，安理会决议被美否决</text>
+  <text x="80" y="328" font-family="system-ui" font-size="11" fill="#6ee7b7">Confidence: 0.92 | Sources: 5 | Tool calls: 3</text>
+  <rect x="80" y="340" width="80" height="6" rx="3" fill="#334155"/>
+  <rect x="80" y="340" width="74" height="6" rx="3" fill="#10b981"/>
+
+  <!-- Reasoning trace panel -->
+  <rect x="60" y="380" width="700" height="190" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="80" y="405" font-family="system-ui" font-size="12" font-weight="600" fill="#e2e8f0">Reasoning Trace</text>
+
+  <!-- Step 1 -->
+  <rect x="80" y="420" width="660" height="32" rx="6" fill="#334155"/>
+  <circle cx="100" cy="436" r="8" fill="#3b82f6"/>
+  <text x="100" y="440" text-anchor="middle" font-family="system-ui" font-size="9" fill="white">1</text>
+  <text x="120" y="440" font-family="system-ui" font-size="11" fill="#94a3b8">graph_query("伊朗 以色列 关系") → 6 relations found</text>
+  <text x="680" y="440" font-family="system-ui" font-size="10" fill="#64748b">120ms</text>
+
+  <!-- Step 2 -->
+  <rect x="80" y="458" width="660" height="32" rx="6" fill="#334155"/>
+  <circle cx="100" cy="474" r="8" fill="#f59e0b"/>
+  <text x="100" y="478" text-anchor="middle" font-family="system-ui" font-size="9" fill="white">2</text>
+  <text x="120" y="478" font-family="system-ui" font-size="11" fill="#94a3b8">causal_trace("伊朗报复性打击", direction="causes") → 3 events</text>
+  <text x="680" y="478" font-family="system-ui" font-size="10" fill="#64748b">85ms</text>
+
+  <!-- Step 3 -->
+  <rect x="80" y="496" width="660" height="32" rx="6" fill="#334155"/>
+  <circle cx="100" cy="512" r="8" fill="#10b981"/>
+  <text x="100" y="516" text-anchor="middle" font-family="system-ui" font-size="9" fill="white">3</text>
+  <text x="120" y="516" font-family="system-ui" font-size="11" fill="#94a3b8">vector_search("各方立场 回应") → 5 chunks retrieved</text>
+  <text x="680" y="516" font-family="system-ui" font-size="10" fill="#64748b">45ms</text>
+
+  <!-- State badge -->
+  <rect x="80" y="540" width="100" height="20" rx="4" fill="#166534"/>
+  <text x="130" y="554" text-anchor="middle" font-family="system-ui" font-size="10" fill="#86efac">VALIDATED</text>
+
+  <!-- Right panel: Sources -->
+  <rect x="820" y="70" width="340" height="520" fill="#1e293b" rx="8"/>
+  <text x="840" y="100" font-family="system-ui" font-size="13" font-weight="600" fill="#e2e8f0">Source Provenance</text>
+
+  <!-- Source 1 -->
+  <rect x="840" y="115" width="300" height="60" rx="6" fill="#334155"/>
+  <rect x="840" y="115" width="4" height="60" rx="2" fill="#10b981"/>
+  <text x="856" y="135" font-family="system-ui" font-size="11" fill="#e2e8f0">Reuters: Iran launches retaliatory...</text>
+  <text x="856" y="153" font-family="system-ui" font-size="10" fill="#64748b">Reliability: 0.9 | major_news_agency</text>
+  <rect x="856" y="160" width="80" height="5" rx="2" fill="#1e293b"/>
+  <rect x="856" y="160" width="72" height="5" rx="2" fill="#10b981"/>
+
+  <!-- Source 2 -->
+  <rect x="840" y="185" width="300" height="60" rx="6" fill="#334155"/>
+  <rect x="840" y="185" width="4" height="60" rx="2" fill="#10b981"/>
+  <text x="856" y="205" font-family="system-ui" font-size="11" fill="#e2e8f0">新华社：伊朗宣布对以色列实施...</text>
+  <text x="856" y="223" font-family="system-ui" font-size="10" fill="#64748b">Reliability: 0.9 | major_news_agency</text>
+  <rect x="856" y="230" width="80" height="5" rx="2" fill="#1e293b"/>
+  <rect x="856" y="230" width="72" height="5" rx="2" fill="#10b981"/>
+
+  <!-- Source 3 -->
+  <rect x="840" y="255" width="300" height="60" rx="6" fill="#334155"/>
+  <rect x="840" y="255" width="4" height="60" rx="2" fill="#f59e0b"/>
+  <text x="856" y="275" font-family="system-ui" font-size="11" fill="#e2e8f0">抖音 @军事观察: 伊朗导弹打击分析</text>
+  <text x="856" y="293" font-family="system-ui" font-size="10" fill="#64748b">Reliability: 0.5 | douyin_kol</text>
+  <rect x="856" y="300" width="80" height="5" rx="2" fill="#1e293b"/>
+  <rect x="856" y="300" width="40" height="5" rx="2" fill="#f59e0b"/>
+
+  <!-- Conflict warning -->
+  <rect x="840" y="340" width="300" height="70" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="1"/>
+  <text x="860" y="362" font-family="system-ui" font-size="11" font-weight="600" fill="#fde68a">Conflict Detected</text>
+  <text x="860" y="382" font-family="system-ui" font-size="10" fill="#fcd34d">Source disagreement: casualty numbers</text>
+  <text x="860" y="398" font-family="system-ui" font-size="10" fill="#92400e">Reuters: "no casualties" vs Douyin: "多人伤亡"</text>
+
+  <!-- Token usage -->
+  <rect x="840" y="440" width="300" height="80" rx="6" fill="#334155"/>
+  <text x="860" y="465" font-family="system-ui" font-size="11" font-weight="600" fill="#e2e8f0">Execution Stats</text>
+  <text x="860" y="487" font-family="system-ui" font-size="10" fill="#94a3b8">Tokens: 3,240 / 50,000 budget</text>
+  <text x="860" y="505" font-family="system-ui" font-size="10" fill="#94a3b8">Duration: 1.2s | State: PLAN→EXEC→SYNTH→VALID</text>
+</svg>

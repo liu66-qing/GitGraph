@@ -1,0 +1,64 @@
+version: "1.0"
+name: "geopolitics"
+description: "国际新闻/地缘政治场景的 few-shot 示例"
+
+entity_types: |
+  - person: 人物（政治家、军事领导人、外交官）
+  - organization: 组织/机构（联合国、北约、哈马斯）
+  - country: 国家
+  - location: 地点（城市、地区、军事基地）
+  - event: 事件（冲突、谈判、制裁）
+  - military: 军事单位（军队、舰队、导弹系统）
+  - media: 媒体/平台
+
+relation_types: |
+  - CAUSED: 导致
+  - RESPONDED_TO: 回应
+  - PRECEDED_BY: 在...之前
+  - LEADER_OF: 领导
+  - MEMBER_OF: 成员
+  - ALLIED_WITH: 同盟/合作
+  - CONFLICT_WITH: 对立/冲突
+  - SANCTIONED: 制裁
+  - SUPPLIED_WEAPONS_TO: 军事援助
+  - NEGOTIATED_WITH: 谈判
+  - CONDEMNED: 谴责
+  - SUPPORTS: 支持
+  - OPPOSES: 反对
+  - ESCALATED_TO: 升级为
+
+few_shot_examples:
+  - input: "2024年4月，伊朗向以色列发射超过300枚导弹和无人机，以报复以色列对伊朗驻叙利亚大使馆的空袭。美国协助以色列拦截了大部分来袭武器。"
+    output: |
+      {
+        "entities": [
+          {"name": "伊朗", "type": "country", "aliases": ["Iran"], "description": "中东国家"},
+          {"name": "以色列", "type": "country", "aliases": ["Israel"], "description": "中东国家"},
+          {"name": "美国", "type": "country", "aliases": ["US", "美方"], "description": "北美国家"},
+          {"name": "伊朗驻叙利亚大使馆空袭", "type": "event", "aliases": [], "description": "以色列对伊朗驻叙利亚大使馆发动空袭"},
+          {"name": "伊朗报复性打击", "type": "event", "aliases": [], "description": "伊朗向以色列发射300+导弹和无人机"}
+        ],
+        "relations": [
+          {"source_entity": "以色列", "target_entity": "伊朗驻叙利亚大使馆空袭", "relation_type": "CAUSED", "temporal_start": "2024-04-01", "temporal_end": null, "confidence": 0.95},
+          {"source_entity": "伊朗驻叙利亚大使馆空袭", "target_entity": "伊朗报复性打击", "relation_type": "CAUSED", "temporal_start": null, "temporal_end": null, "confidence": 0.95},
+          {"source_entity": "伊朗", "target_entity": "以色列", "relation_type": "CONFLICT_WITH", "temporal_start": null, "temporal_end": null, "confidence": 0.95},
+          {"source_entity": "美国", "target_entity": "以色列", "relation_type": "ALLIED_WITH", "temporal_start": null, "temporal_end": null, "confidence": 0.9}
+        ]
+      }
+
+  - input: "联合国安理会就加沙停火决议进行投票，美国行使否决权阻止了该决议。中国和俄罗斯对此表示强烈谴责。"
+    output: |
+      {
+        "entities": [
+          {"name": "联合国安理会", "type": "organization", "aliases": ["安理会", "UNSC"], "description": "联合国安全理事会"},
+          {"name": "美国", "type": "country", "aliases": ["US"], "description": ""},
+          {"name": "中国", "type": "country", "aliases": ["China"], "description": ""},
+          {"name": "俄罗斯", "type": "country", "aliases": ["Russia", "俄方"], "description": ""},
+          {"name": "加沙停火决议投票", "type": "event", "aliases": [], "description": "安理会就加沙停火进行投票"}
+        ],
+        "relations": [
+          {"source_entity": "美国", "target_entity": "加沙停火决议投票", "relation_type": "OPPOSES", "temporal_start": null, "temporal_end": null, "confidence": 0.95},
+          {"source_entity": "中国", "target_entity": "美国", "relation_type": "CONDEMNED", "temporal_start": null, "temporal_end": null, "confidence": 0.9},
+          {"source_entity": "俄罗斯", "target_entity": "美国", "relation_type": "CONDEMNED", "temporal_start": null, "temporal_end": null, "confidence": 0.9}
+        ]
+      }

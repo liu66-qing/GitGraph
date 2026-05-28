@@ -1,54 +1,66 @@
-"""LLM-based entity and relation extraction from text chunks."""
+"""LLM-based entity and relation extraction with Chinese prompts and scene adaptation."""
 
 from __future__ import annotations
 
 import json
+import re
 
 import structlog
 
 from evograph.llm.client import llm_client
 from evograph.models.domain import ExtractedEntity, ExtractedRelation, ExtractionResult, EntityType
+from evograph.prompts import build_extraction_prompt
 
 logger = structlog.get_logger()
 
-EXTRACTION_PROMPT = """You are a knowledge graph extraction engine. Extract entities and relationships from the given text.
 
-Rules:
-1. Extract named entities (people, organizations, products, events, locations, technologies, concepts)
-2. Extract relationships between entities with temporal information when available
-3. For each relationship, estimate a confidence score (0.0-1.0)
-4. If temporal information is present (dates, "since", "until", "from X to Y"), include it
-5. Use normalized relationship types: WORKS_AT, CEO_OF, FOUNDED, ACQUIRED, LOCATED_IN, PARTNER_OF, COMPETES_WITH, PRODUCES, INVESTED_IN, CAUSED, SUCCEEDED_BY
+class RobustJsonParser:
+    """Parse LLM output that may not be clean JSON."""
 
-Output JSON format:
-{
-  "entities": [
-    {"name": "...", "type": "person|organization|product|event|location|technology|concept", "aliases": [], "description": "..."}
-  ],
-  "relations": [
-    {"source_entity": "...", "target_entity": "...", "relation_type": "...", "temporal_start": "YYYY-MM-DD or null", "temporal_end": "YYYY-MM-DD or null", "confidence": 0.9}
-  ]
-}
+    def parse(self, raw: str) -> dict | None:
+        # Attempt 1: direct parse
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            pass
 
-Text to extract from:
----
-{text}
----
+        # Attempt 2: extract ```json``` code block
+        match = re.search(r"```(?:json)?\s*\n?(.*?)\n?```", raw, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except json.JSONDecodeError:
+                pass
 
-Extract all entities and relationships. Be thorough but precise."""
+        # Attempt 3: find outermost { ... }
+        start = raw.find("{")
+        end = raw.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            try:
+                return json.loads(raw[start:end + 1])
+            except json.JSONDecodeError:
+                pass
+
+        return None
+
+
+_parser = RobustJsonParser()
 
 
 async def extract_from_chunk(
-    chunk_text: str, document_id: str, chunk_id: str
+    chunk_text: str, document_id: str, chunk_id: str, scene: str = "geopolitics"
 ) -> ExtractionResult:
-    prompt = EXTRACTION_PROMPT.format(text=chunk_text)
+    prompt = build_extraction_prompt(chunk_text, scene=scene)
 
     try:
         response = await llm_client.chat_json(
             messages=[{"role": "user", "content": prompt}]
         )
-        data = json.loads(response)
-    except (json.JSONDecodeError, Exception) as e:
+        data = _parser.parse(response)
+        if data is None:
+            logger.warning("extraction_parse_failed", chunk_id=chunk_id, raw=response[:200])
+            return ExtractionResult(entities=[], relations=[], document_id=document_id, chunk_id=chunk_id)
+    except Exception as e:
         logger.error("extraction_failed", chunk_id=chunk_id, error=str(e))
         return ExtractionResult(entities=[], relations=[], document_id=document_id, chunk_id=chunk_id)
 
@@ -92,7 +104,7 @@ async def extract_from_chunk(
 
 
 async def extract_from_document(
-    chunks: list[dict], document_id: str
+    chunks: list[dict], document_id: str, scene: str = "geopolitics"
 ) -> list[ExtractionResult]:
     results = []
     for chunk in chunks:
@@ -100,6 +112,7 @@ async def extract_from_document(
             chunk_text=chunk["text"],
             document_id=document_id,
             chunk_id=chunk["id"],
+            scene=scene,
         )
         results.append(result)
     return results

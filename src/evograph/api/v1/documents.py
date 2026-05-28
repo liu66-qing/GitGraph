@@ -1,11 +1,13 @@
-"""Document ingestion endpoints."""
+"""Document ingestion endpoints: file upload, URL, and Douyin video."""
 
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+import tempfile
+from pathlib import Path
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
+from pydantic import BaseModel
 import structlog
 
 from evograph.models.domain import DocumentStatus
@@ -13,6 +15,17 @@ from evograph.models.api_schemas import DocumentUploadResponse, DocumentDetail
 
 logger = structlog.get_logger()
 router = APIRouter()
+
+UPLOAD_DIR = Path(tempfile.gettempdir()) / "pulsegraph_uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+
+class URLIngestRequest(BaseModel):
+    url: str
+
+
+class DouyinIngestRequest(BaseModel):
+    douyin_url: str
 
 
 @router.post("", response_model=DocumentUploadResponse)
@@ -23,33 +36,63 @@ async def upload_document(file: UploadFile = File(...)) -> DocumentUploadRespons
     doc_id = str(uuid.uuid4())
     content = await file.read()
 
-    # TODO: Save file to storage and dispatch Celery task
-    logger.info("document_uploaded", doc_id=doc_id, filename=file.filename, size=len(content))
+    file_path = UPLOAD_DIR / f"{doc_id}_{file.filename}"
+    file_path.write_bytes(content)
 
+    from evograph.tasks.ingestion_tasks import ingest_document_task
+    ingest_document_task.delay(doc_id, str(file_path))
+
+    logger.info("document_uploaded", doc_id=doc_id, filename=file.filename, size=len(content))
     return DocumentUploadResponse(
         id=doc_id,
         filename=file.filename,
-        status=DocumentStatus.PENDING,
+        status=DocumentStatus.PROCESSING,
+    )
+
+
+@router.post("/url", response_model=DocumentUploadResponse)
+async def ingest_from_url(req: URLIngestRequest) -> DocumentUploadResponse:
+    """Fetch content from a news URL and process it."""
+    doc_id = str(uuid.uuid4())
+
+    from evograph.tasks.ingestion_tasks import ingest_url_task
+    ingest_url_task.delay(doc_id, req.url)
+
+    logger.info("url_ingestion_started", doc_id=doc_id, url=req.url)
+    return DocumentUploadResponse(
+        id=doc_id,
+        filename=f"url_{doc_id[:8]}.txt",
+        status=DocumentStatus.PROCESSING,
+    )
+
+
+@router.post("/douyin", response_model=DocumentUploadResponse)
+async def ingest_from_douyin(req: DouyinIngestRequest) -> DocumentUploadResponse:
+    """Extract content from a Douyin video link and process it."""
+    doc_id = str(uuid.uuid4())
+
+    from evograph.tasks.ingestion_tasks import ingest_douyin_task
+    ingest_douyin_task.delay(doc_id, req.douyin_url)
+
+    logger.info("douyin_ingestion_started", doc_id=doc_id, url=req.douyin_url)
+    return DocumentUploadResponse(
+        id=doc_id,
+        filename=f"douyin_{doc_id[:8]}.txt",
+        status=DocumentStatus.PROCESSING,
     )
 
 
 @router.get("", response_model=list[DocumentDetail])
-async def list_documents(
-    skip: int = 0,
-    limit: int = 20,
-) -> list[DocumentDetail]:
-    # TODO: Query from PostgreSQL
+async def list_documents(skip: int = 0, limit: int = 20) -> list[DocumentDetail]:
     return []
 
 
 @router.get("/{doc_id}", response_model=DocumentDetail)
 async def get_document(doc_id: str) -> DocumentDetail:
-    # TODO: Query from PostgreSQL
     raise HTTPException(status_code=404, detail="Document not found")
 
 
 @router.delete("/{doc_id}")
 async def delete_document(doc_id: str) -> dict[str, str]:
-    # TODO: Remove document and retract its facts from graph
     logger.info("document_deleted", doc_id=doc_id)
     return {"status": "deleted", "id": doc_id}

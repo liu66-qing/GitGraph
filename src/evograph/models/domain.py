@@ -12,10 +12,14 @@ from pydantic import BaseModel, Field
 class EntityType(str, Enum):
     PERSON = "person"
     ORGANIZATION = "organization"
-    PRODUCT = "product"
-    EVENT = "event"
+    COUNTRY = "country"
     LOCATION = "location"
+    EVENT = "event"
+    WORK = "work"
+    MILITARY = "military"
     CONCEPT = "concept"
+    MEDIA = "media"
+    PRODUCT = "product"
     TECHNOLOGY = "technology"
 
 
@@ -46,6 +50,53 @@ class DocumentStatus(str, Enum):
     MERGING = "merging"
     COMPLETED = "completed"
     FAILED = "failed"
+
+
+class SourceType(str, Enum):
+    WEB_ARTICLE = "web_article"
+    DOUYIN = "douyin"
+    FILE_UPLOAD = "file_upload"
+    MANUAL_INPUT = "manual_input"
+
+
+SOURCE_RELIABILITY = {
+    "official_statement": 0.95,
+    "major_news_agency": 0.9,
+    "mainstream_media": 0.8,
+    "regional_media": 0.7,
+    "douyin_verified_media": 0.7,
+    "douyin_kol": 0.5,
+    "douyin_personal": 0.4,
+    "social_media": 0.3,
+}
+
+UNIVERSAL_RELATIONS = {
+    "CAUSED", "RESPONDED_TO", "PRECEDED_BY", "RELATED_TO",
+}
+
+PERSON_RELATIONS = {
+    "LEADER_OF", "MEMBER_OF", "ALLIED_WITH", "CONFLICT_WITH",
+    "FAMILY_OF", "DATING", "EX_PARTNER", "MENTORED_BY",
+}
+
+GEOPOLITICS_RELATIONS = {
+    "SANCTIONED", "SUPPLIED_WEAPONS_TO", "NEGOTIATED_WITH",
+    "CONDEMNED", "SUPPORTS", "OPPOSES", "ESCALATED_TO",
+}
+
+FICTION_RELATIONS = {
+    "PLAYED_BY", "ADAPTED_FROM", "APPEARS_IN",
+}
+
+ALL_RELATION_TYPES = UNIVERSAL_RELATIONS | PERSON_RELATIONS | GEOPOLITICS_RELATIONS | FICTION_RELATIONS
+
+SINGULAR_RELATIONS = {"LEADER_OF", "DATING", "MARRIED_TO"}
+
+INVERSE_PAIRS = {
+    "ALLIED_WITH": "CONFLICT_WITH",
+    "SUPPORTS": "OPPOSES",
+    "SANCTIONED": "SUPPLIED_WEAPONS_TO",
+}
 
 
 # === Graph Domain Models ===

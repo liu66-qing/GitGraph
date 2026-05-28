@@ -50,6 +50,22 @@ class LLMClient:
             response_format={"type": "json_object"},
         )
 
+    async def chat_with_tools(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        temperature: float = 0.0,
+    ):
+        """Call LLM with OpenAI Function Calling protocol."""
+        response = await self._client.chat.completions.create(
+            model=self._model,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+            temperature=temperature,
+        )
+        return response
+
     async def stream_chat(
         self,
         messages: list[dict[str, str]],

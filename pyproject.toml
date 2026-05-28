@@ -1,11 +1,11 @@
 [project]
-name = "evograph"
-version = "0.1.0"
-description = "EvoGraph - Real-time Knowledge Graph Evolution Agent (Agentic RAG)"
+name = "pulsegraph"
+version = "1.0.0"
+description = "PulseGraph - Multi-source Information Pulse Graph Intelligence Analysis System"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.11"
-authors = [{name = "EvoGraph Team"}]
+authors = [{name = "PulseGraph Team"}]
 
 dependencies = [
     "fastapi==0.115.6",
@@ -38,6 +38,8 @@ dependencies = [
     "opentelemetry-api==1.29.0",
     "opentelemetry-sdk==1.29.0",
     "prometheus-client==0.21.1",
+    "pyyaml==6.0.2",
+    "duckduckgo-search==6.3.7",
 ]
 
 [project.optional-dependencies]
