@@ -24,6 +24,11 @@ class ToolRegistry:
             "conflict_check": self._conflict_check,
             "causal_reason": self._causal_reason,
             "hybrid_search": self._hybrid_search,
+            # === Code-assistant tools ===
+            "find_callers": self._find_callers,
+            "find_dependencies": self._find_dependencies,
+            "get_symbol_history": self._get_symbol_history,
+            "find_breaking_changes": self._find_breaking_changes,
         }
 
     def get_tool(self, name: str):
@@ -99,6 +104,77 @@ class ToolRegistry:
         self, query: str = "", entities: list[str] | None = None, **kwargs
     ) -> dict:
         return await hybrid_retriever.retrieve(query, entities=entities)
+
+    # === Code-assistant tools ===
+
+    async def _find_callers(self, symbol: str = "", **kwargs) -> list[dict]:
+        """Who calls this function/method? Reverse CALLS edges."""
+        if not symbol:
+            return []
+        return await neo4j_client.execute_query(
+            """
+            MATCH (caller:Entity)-[r:RELATION {type: 'CALLS'}]->(target:Entity)
+            WHERE r.is_active = true
+              AND (target.name = $symbol OR target.name ENDS WITH '.' + $symbol)
+            RETURN caller.name AS caller, target.name AS target
+            LIMIT 50
+            """,
+            {"symbol": symbol},
+        )
+
+    async def _find_dependencies(self, symbol: str = "", **kwargs) -> list[dict]:
+        """What does this function/method call (its outgoing dependencies)?"""
+        if not symbol:
+            return []
+        return await neo4j_client.execute_query(
+            """
+            MATCH (src:Entity)-[r:RELATION {type: 'CALLS'}]->(dep:Entity)
+            WHERE r.is_active = true
+              AND (src.name = $symbol OR src.name ENDS WITH '.' + $symbol)
+            RETURN src.name AS source, dep.name AS dependency
+            LIMIT 50
+            """,
+            {"symbol": symbol},
+        )
+
+    async def _get_symbol_history(self, symbol: str = "", **kwargs) -> list[dict]:
+        """Commits that introduced breaking changes to this symbol over time."""
+        if not symbol:
+            return []
+        return await neo4j_client.execute_query(
+            """
+            MATCH (cf:Conflict {kind: 'breaking_change'})-[:INTRODUCED_IN]->(cm:Commit)
+            WHERE cf.qualified_name = $symbol OR cf.qualified_name ENDS WITH '.' + $symbol
+            RETURN cm.short_sha AS commit, cm.subject AS subject,
+                   cf.description AS change, cf.old_signature AS old_sig,
+                   cf.new_signature AS new_sig, cf.callers AS affected_callers
+            ORDER BY cm.short_sha
+            LIMIT 50
+            """,
+            {"symbol": symbol},
+        )
+
+    async def _find_breaking_changes(self, repo_id: str = "", **kwargs) -> list[dict]:
+        """All detected breaking changes, optionally scoped to one repo."""
+        if repo_id:
+            query = """
+            MATCH (cf:Conflict {kind: 'breaking_change', repo_id: $repo_id})-[:INTRODUCED_IN]->(cm:Commit)
+            RETURN cf.qualified_name AS symbol, cf.description AS change,
+                   cm.short_sha AS commit, cm.subject AS subject, cf.callers AS affected_callers
+            ORDER BY cm.short_sha
+            LIMIT 100
+            """
+            params = {"repo_id": repo_id}
+        else:
+            query = """
+            MATCH (cf:Conflict {kind: 'breaking_change'})-[:INTRODUCED_IN]->(cm:Commit)
+            RETURN cf.qualified_name AS symbol, cf.description AS change,
+                   cm.short_sha AS commit, cm.subject AS subject, cf.callers AS affected_callers
+            ORDER BY cm.short_sha
+            LIMIT 100
+            """
+            params = {}
+        return await neo4j_client.execute_query(query, params)
 
 
 tool_registry = ToolRegistry()

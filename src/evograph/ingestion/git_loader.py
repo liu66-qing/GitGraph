@@ -32,6 +32,7 @@ class CommitInfo:
     email: str
     timestamp: datetime
     subject: str
+    parent_sha: str = ""   # first parent; empty for the root commit
 
 
 @dataclass
@@ -65,7 +66,7 @@ def list_commits(repo_path: str, max_commits: int | None = None, branch: str = "
     """Return commits oldest-first (chronological), so replaying them models
     forward evolution through time."""
     # Unit-separated fields, record-separated rows, to survive odd commit text.
-    fmt = "%H%x1f%h%x1f%an%x1f%ae%x1f%aI%x1f%s"
+    fmt = "%H%x1f%h%x1f%an%x1f%ae%x1f%aI%x1f%s%x1f%P"
     args = ["log", f"--pretty=format:{fmt}", branch]
     if max_commits:
         args.insert(1, f"-n{max_commits}")
@@ -78,12 +79,15 @@ def list_commits(repo_path: str, max_commits: int | None = None, branch: str = "
         if len(parts) < 6:
             continue
         sha, short, author, email, iso, subject = parts[:6]
+        parents = parts[6].split() if len(parts) > 6 and parts[6].strip() else []
+        first_parent = parents[0] if parents else ""
         try:
             ts = datetime.fromisoformat(iso)
         except ValueError:
             ts = datetime.now(timezone.utc)
         commits.append(
-            CommitInfo(sha=sha, short_sha=short, author=author, email=email, timestamp=ts, subject=subject)
+            CommitInfo(sha=sha, short_sha=short, author=author, email=email,
+                       timestamp=ts, subject=subject, parent_sha=first_parent)
         )
     commits.reverse()  # oldest first
     if max_commits:

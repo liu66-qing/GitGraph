@@ -1,11 +1,12 @@
 from fastapi import APIRouter
 
-from evograph.api.v1 import documents, query, graph, conflicts, timeline, admin
+from evograph.api.v1 import documents, query, graph, conflicts, timeline, admin, repositories
 
 api_router = APIRouter()
 
 v1_router = APIRouter(prefix="/v1")
 v1_router.include_router(documents.router, prefix="/documents", tags=["documents"])
+v1_router.include_router(repositories.router, prefix="/repositories", tags=["repositories"])
 v1_router.include_router(query.router, prefix="/query", tags=["query"])
 v1_router.include_router(graph.router, prefix="/graph", tags=["graph"])
 v1_router.include_router(conflicts.router, prefix="/conflicts", tags=["conflicts"])

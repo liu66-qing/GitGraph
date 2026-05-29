@@ -132,6 +132,11 @@ def diff_snapshots(
     # For removed symbols, callers must be looked up in the OLD snapshot
     # (they may have been removed too, but a still-present caller is the danger).
     old_callers = _index_callers(old_parses)
+    # Simple names that still exist anywhere in the NEW snapshot. Used to
+    # suppress false 'removed' reports caused by file rewrites/moves/renames
+    # of the enclosing path — if the same callable name still exists, the
+    # contract likely moved rather than vanished.
+    new_simple_names = {q.rsplit('.', 1)[-1] for q in new_syms}
 
     changes: list[BreakingChange] = []
 
@@ -143,7 +148,10 @@ def diff_snapshots(
             callers = [c for c in old_callers.get(qname, []) if c in new_syms or c in old_syms]
             # Only breaking if something still references it.
             still_calling = old_callers.get(qname, [])
-            if still_calling:
+            simple = qname.rsplit('.', 1)[-1]
+            # Only a true removal if callers remain AND no same-named callable
+            # survives elsewhere in the new snapshot (else it's a move/rewrite).
+            if still_calling and simple not in new_simple_names:
                 changes.append(BreakingChange(
                     kind="SYMBOL_REMOVED",
                     qualified_name=qname,
@@ -198,17 +206,24 @@ def scan_history(snapshots) -> list[BreakingChange]:
     `snapshots` items must expose `.commit` (with sha/short_sha/subject) and
     `.parses`. Kept loosely typed to avoid a hard import cycle with git_loader.
     """
+    snaps = list(snapshots)
+    # Index by sha so each commit is compared against ITS OWN parent, not just
+    # the chronologically previous one. This is essential for non-linear history
+    # (merges, multiple roots) where time-adjacent commits live on different
+    # branches and would otherwise produce huge spurious diffs.
+    by_sha = {s.commit.sha: s for s in snaps}
     all_changes: list[BreakingChange] = []
-    prev = None
-    for snap in snapshots:
-        if prev is not None:
-            all_changes.extend(diff_snapshots(
-                prev.parses,
-                snap.parses,
-                commit_sha=snap.commit.sha,
-                commit_short=snap.commit.short_sha,
-                commit_subject=snap.commit.subject,
-            ))
-        prev = snap
+    for snap in snaps:
+        parent_sha = getattr(snap.commit, "parent_sha", "")
+        parent = by_sha.get(parent_sha)
+        if parent is None:
+            continue  # root commit (or parent outside the loaded window)
+        all_changes.extend(diff_snapshots(
+            parent.parses,
+            snap.parses,
+            commit_sha=snap.commit.sha,
+            commit_short=snap.commit.short_sha,
+            commit_subject=snap.commit.subject,
+        ))
     return all_changes
 
