@@ -21,6 +21,11 @@ class EntityType(str, Enum):
     MEDIA = "media"
     PRODUCT = "product"
     TECHNOLOGY = "technology"
+    # === Code-assistant entity types (deterministic AST extraction) ===
+    MODULE = "module"
+    CLASS = "class"
+    FUNCTION = "function"
+    METHOD = "method"
 
 
 class ConflictType(str, Enum):
@@ -86,6 +91,14 @@ GEOPOLITICS_RELATIONS = {
 
 FICTION_RELATIONS = {
     "PLAYED_BY", "ADAPTED_FROM", "APPEARS_IN",
+}
+
+# === Code-assistant relation types (deterministic AST extraction) ===
+CODE_RELATIONS = {
+    "DEFINES",   # module defines class/function; class defines method
+    "IMPORTS",   # module imports another module/symbol
+    "INHERITS",  # class inherits from base class
+    "CALLS",     # function/method calls another callable
 }
 
 ALL_RELATION_TYPES = UNIVERSAL_RELATIONS | PERSON_RELATIONS | GEOPOLITICS_RELATIONS | FICTION_RELATIONS
@@ -168,6 +181,7 @@ class AgentResponse(BaseModel):
     sources: list[ProvenanceRecord] = Field(default_factory=list)
     conflicts: list[KnowledgeConflict] = Field(default_factory=list)
     entities_referenced: list[str] = Field(default_factory=list)
+
 
 
 # === Extraction Models ===
