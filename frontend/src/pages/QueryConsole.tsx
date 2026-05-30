@@ -75,22 +75,22 @@ export default function QueryConsole() {
     <div className="h-full flex flex-col">
       <header className="p-4 border-b bg-white">
         <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Brain className="w-5 h-5 text-blue-500" />
-          Query Console
+          <Brain className="w-5 h-5 text-indigo-500" />
+          智能问答
         </h2>
-        <p className="text-sm text-gray-500">Ask questions with multi-hop reasoning over the knowledge graph</p>
+        <p className="text-sm text-gray-500">基于代码知识图谱的多跳推理问答</p>
       </header>
 
       <div className="flex-1 overflow-auto p-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 mt-20">
             <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p className="text-lg">Ask a question about your knowledge graph</p>
+            <p className="text-lg">向你的代码图谱提问</p>
             <div className="mt-4 space-y-2 text-sm">
-              <p className="text-gray-500">Try:</p>
-              <button onClick={() => setInput('Who is the CEO of OpenAI?')} className="block mx-auto text-blue-500 hover:underline">"Who is the CEO of OpenAI?"</button>
-              <button onClick={() => setInput('What caused the leadership crisis at OpenAI in 2023?')} className="block mx-auto text-blue-500 hover:underline">"What caused the leadership crisis at OpenAI in 2023?"</button>
-              <button onClick={() => setInput('Compare Microsoft and Google investments in AI')} className="block mx-auto text-blue-500 hover:underline">"Compare Microsoft and Google investments in AI"</button>
+              <p className="text-gray-500">试试:</p>
+              <button onClick={() => setInput('谁调用了 get_user 函数?')} className="block mx-auto text-indigo-500 hover:underline">"谁调用了 get_user 函数?"</button>
+              <button onClick={() => setInput('哪个 commit 引入了破坏性变更?')} className="block mx-auto text-indigo-500 hover:underline">"哪个 commit 引入了破坏性变更?"</button>
+              <button onClick={() => setInput('CodeRepoPipeline 依赖哪些模块?')} className="block mx-auto text-indigo-500 hover:underline">"CodeRepoPipeline 依赖哪些模块?"</button>
             </div>
           </div>
         )}

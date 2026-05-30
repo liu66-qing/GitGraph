@@ -49,6 +49,98 @@ export const api = {
   getDiff: (from: string, to: string) =>
     request<any>(`/timeline/diff?from_ts=${encodeURIComponent(from)}&to_ts=${encodeURIComponent(to)}`),
 
+  // === Code repositories (code-evolution analysis) ===
+  // List repositories that have been analyzed.
+  listRepos: () => request<{ repositories: RepoSummary[]; total: number }>('/repositories'),
+  // Kick off analysis of a local git repo path (async on the backend).
+  analyzeRepo: (repoPath: string, repoId?: string, maxCommits?: number) =>
+    request<any>('/repositories', {
+      method: 'POST',
+      body: JSON.stringify({ repo_path: repoPath, repo_id: repoId, max_commits: maxCommits }),
+    }),
+  // Code graph (nodes = symbols, edges = CALLS/IMPORTS/INHERITS/DEFINES).
+  getRepoGraph: (repoId: string, limit = 300) =>
+    request<RepoGraphResponse>(`/repositories/${encodeURIComponent(repoId)}/graph?limit=${limit}`),
+  // Commit history with per-commit counts and breaking-change flag.
+  getRepoCommits: (repoId: string) =>
+    request<RepoCommitsResponse>(`/repositories/${encodeURIComponent(repoId)}/commits`),
+  // Detected breaking changes for a repo.
+  getBreakingChanges: (repoId: string) =>
+    request<BreakingChangesResponse>(`/repositories/${encodeURIComponent(repoId)}/breaking-changes`),
+  // Node/relation/commit/breaking counts.
+  getRepoStats: (repoId: string) =>
+    request<RepoStats>(`/repositories/${encodeURIComponent(repoId)}/stats`),
+
   // Admin
   healthCheck: () => request<any>('/admin/health'),
+}
+
+// === Code-domain response shapes (match the backend repositories endpoints) ===
+
+export interface RepoSummary {
+  repo_id: string
+  nodes: number
+  commits: number
+}
+
+export interface CodeGraphNode {
+  id: string
+  name: string
+  kind: string | null // module | class | function | method
+  signature: string | null
+  file_path: string | null
+}
+
+export interface CodeGraphEdge {
+  source: string
+  target: string
+  type: string // CALLS | IMPORTS | INHERITS | DEFINES
+}
+
+export interface RepoGraphResponse {
+  repo_id: string
+  nodes: CodeGraphNode[]
+  edges: CodeGraphEdge[]
+}
+
+export interface RepoCommit {
+  sha: string
+  short_sha: string
+  subject: string
+  author: string | null
+  timestamp: string | null
+  callables: number | null
+  files: number | null
+  breaking_changes: number
+}
+
+export interface RepoCommitsResponse {
+  repo_id: string
+  commits: RepoCommit[]
+  total: number
+}
+
+export interface BreakingChange {
+  symbol: string
+  type: string // SIGNATURE_CHANGED | REQUIRED_PARAM_ADDED | SYMBOL_REMOVED (in description)
+  description: string
+  old_signature: string | null
+  new_signature: string | null
+  affected_callers: string[] | null
+  commit: string
+  commit_subject: string
+}
+
+export interface BreakingChangesResponse {
+  repo_id: string
+  breaking_changes: BreakingChange[]
+  total: number
+}
+
+export interface RepoStats {
+  repo_id: string
+  nodes: number
+  relations: number
+  commits: number
+  breaking_changes: number
 }
