@@ -142,6 +142,12 @@ def build_extraction_from_parses(
             type=_KIND_TO_ENTITY_TYPE[n.kind],
             aliases=[n.simple_name] if n.simple_name != n.qualified_name else [],
             description=(n.signature or n.docstring[:200] or n.kind),
+            metadata={
+                "repo_id": document_id,   # document_id carries the repo_id here
+                "code_kind": n.kind,      # module|class|function|method
+                "signature": n.signature,
+                "file_path": n.file_path,
+            },
         )
         for n in all_nodes
     ]

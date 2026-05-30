@@ -104,6 +104,9 @@ class GraphMerger:
             return entity_id
 
         entity_id = str(uuid.uuid4())
+        # Optional code-node properties (repo_id/code_kind/signature/file_path).
+        # Empty for document entities, so this leaves the document path untouched.
+        meta = getattr(entity, "metadata", None) or {}
         await neo4j_client.execute_write(
             """
             CREATE (e:Entity {
@@ -112,6 +115,10 @@ class GraphMerger:
                 type: $type,
                 aliases: $aliases,
                 description: $description,
+                repo_id: $repo_id,
+                code_kind: $code_kind,
+                signature: $signature,
+                file_path: $file_path,
                 first_seen: datetime(),
                 last_updated: datetime()
             })
@@ -122,6 +129,10 @@ class GraphMerger:
                 "type": entity.type.value,
                 "aliases": entity.aliases,
                 "description": entity.description,
+                "repo_id": meta.get("repo_id"),
+                "code_kind": meta.get("code_kind"),
+                "signature": meta.get("signature"),
+                "file_path": meta.get("file_path"),
             },
         )
         return entity_id

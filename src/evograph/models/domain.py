@@ -192,6 +192,10 @@ class ExtractedEntity(BaseModel):
     type: EntityType
     aliases: list[str] = Field(default_factory=list)
     description: str = ""
+    # Optional extra node properties (e.g. repo_id, signature for code nodes).
+    # Document extraction leaves this empty; the code pipeline fills it so code
+    # nodes can be queried per-repo and rendered with their signature.
+    metadata: dict = Field(default_factory=dict)
 
 
 class ExtractedRelation(BaseModel):
