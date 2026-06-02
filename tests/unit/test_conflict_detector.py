@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime
 
-from evograph.models.domain import GraphRelation, ConflictType
+from codegraph.models.domain import GraphRelation, ConflictType
 
 
 class TestConflictDetection:
@@ -62,7 +62,7 @@ class TestConflictDetection:
 
 class TestExtractionModels:
     def test_extraction_result_creation(self):
-        from evograph.models.domain import (
+        from codegraph.models.domain import (
             ExtractionResult,
             ExtractedEntity,
             ExtractedRelation,

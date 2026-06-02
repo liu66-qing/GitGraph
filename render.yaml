@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: evograph-api
+    name: codegraph-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     envVars:

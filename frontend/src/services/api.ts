@@ -503,7 +503,7 @@ export interface SymbolExplanation {
   generated_by: 'llm' | 'structural'
 }
 
-// === Multi-agent analysis (matches backend src/evograph/api/v1/analysis.py) ===
+// === Multi-agent analysis (matches backend src/codegraph/api/v1/analysis.py) ===
 
 export interface AnalysisStartResponse {
   task_id: string

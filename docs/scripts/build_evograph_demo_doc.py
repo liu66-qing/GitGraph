@@ -11,8 +11,8 @@ from docx.shared import Cm, Pt, RGBColor
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-ASSETS = DOCS / "evograph-demo-assets"
-OUT = DOCS / "EvoGraph演示说明文档.docx"
+ASSETS = DOCS / "codegraph-demo-assets"
+OUT = DOCS / "CodeGraph演示说明文档.docx"
 
 ACCENT = "2563EB"
 INK = "0F172A"
@@ -27,7 +27,7 @@ MODULES = [
         "entry": "https://evo-graph.vercel.app/",
         "image": "01-graph-explorer.png",
         "caption": "图 1  Graph Explorer 知识图谱浏览器",
-        "positioning": "用于展示 EvoGraph 已构建的实体关系网络，是系统知识图谱能力的主入口。",
+        "positioning": "用于展示 CodeGraph 已构建的实体关系网络，是系统知识图谱能力的主入口。",
         "features": [
             "左侧提供 5 个核心功能模块导航，便于在图谱、问答、文档、冲突和时序视图之间切换。",
             "中央区域基于 D3.js 展示力导向知识图谱，节点表示实体，连线表示实体之间的语义关系。",
@@ -217,7 +217,7 @@ def add_image(doc, image_path, caption):
 
 def add_info_table(doc):
     rows = [
-        ("项目名称", "EvoGraph 实时知识图谱演化智能体"),
+        ("项目名称", "CodeGraph 实时知识图谱演化智能体"),
         ("在线 Demo", "https://evo-graph.vercel.app/"),
         ("GitHub", "https://github.com/liu66-qing/KG-RAG-Agent"),
         ("文档用途", "Demo 提交说明文档，用于展示系统页面、核心能力和验收关注点"),
@@ -282,7 +282,7 @@ def main():
     title = doc.add_paragraph()
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     title.paragraph_format.space_after = Pt(8)
-    r = title.add_run("EvoGraph Demo 提交说明文档")
+    r = title.add_run("CodeGraph Demo 提交说明文档")
     set_run_font(r, size=23, bold=True, color=ACCENT)
 
     subtitle = doc.add_paragraph()
@@ -296,7 +296,7 @@ def main():
     add_heading(doc, "一、Demo 概述", 1)
     add_para(
         doc,
-        "EvoGraph 是一个面向 Agentic RAG 场景的知识图谱演化系统。系统将文档解析、实体关系抽取、知识图谱构建、时序版本管理、冲突检测和可溯源问答整合到一个可演示的 Web 应用中。",
+        "CodeGraph 是一个面向 Agentic RAG 场景的知识图谱演化系统。系统将文档解析、实体关系抽取、知识图谱构建、时序版本管理、冲突检测和可溯源问答整合到一个可演示的 Web 应用中。",
     )
     add_para(
         doc,
@@ -325,7 +325,7 @@ def main():
     add_heading(doc, "四、提交结论", 1)
     add_para(
         doc,
-        "本 Demo 已覆盖知识图谱浏览、智能问答、文档上传、冲突管理和时序演化五个核心页面，可用于展示 EvoGraph 从文档到知识、从知识到推理、从推理到溯源的完整链路。核心创新点包括自适应推理循环、时序知识版本化、三类冲突检测和全链路溯源。",
+        "本 Demo 已覆盖知识图谱浏览、智能问答、文档上传、冲突管理和时序演化五个核心页面，可用于展示 CodeGraph 从文档到知识、从知识到推理、从推理到溯源的完整链路。核心创新点包括自适应推理循环、时序知识版本化、三类冲突检测和全链路溯源。",
     )
 
     doc.save(OUT)

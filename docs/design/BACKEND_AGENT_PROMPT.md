@@ -9,18 +9,18 @@
 将 CodeGraph 的后端从"分析脚本集合"重构为**多 Agent 协作系统**。目标是让这个项目在简历上能体现 Agent 应用的核心设计能力。
 
 **项目根目录:** `E:\RAG`
-**后端代码:** `src/evograph/`
-**现有分析器:** `src/evograph/agent/analyzers/` (architecture_analyzer, tour_builder, highlights_analyzer, patterns_extractor 等)
+**后端代码:** `src/codegraph/`
+**现有分析器:** `src/codegraph/agent/analyzers/` (architecture_analyzer, tour_builder, highlights_analyzer, patterns_extractor 等)
 
 ---
 
 ## 必读文件
 
 1. `CODEGRAPH_PRD.md` — 了解产品的4个学习阶段和每阶段需要的数据
-2. `src/evograph/agent/analyzers/architecture_analyzer.py` — 现有架构分析逻辑
-3. `src/evograph/agent/analyzers/tour_builder.py` — 现有流程追踪逻辑
-4. `src/evograph/config.py` — 现有配置(LLM key 等)
-5. `src/evograph/main.py` — 现有 FastAPI 入口
+2. `src/codegraph/agent/analyzers/architecture_analyzer.py` — 现有架构分析逻辑
+3. `src/codegraph/agent/analyzers/tour_builder.py` — 现有流程追踪逻辑
+4. `src/codegraph/config.py` — 现有配置(LLM key 等)
+5. `src/codegraph/main.py` — 现有 FastAPI 入口
 
 ---
 
@@ -29,7 +29,7 @@
 ### 核心抽象: BaseAgent
 
 ```python
-# src/evograph/agent/base.py
+# src/codegraph/agent/base.py
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -131,7 +131,7 @@ class BaseAgent(ABC):
 ### 工具层: Tools
 
 ```python
-# src/evograph/agent/tools/__init__.py
+# src/codegraph/agent/tools/__init__.py
 
 """
 每个工具是一个 async 函数,接收明确参数,返回结构化结果。
@@ -153,7 +153,7 @@ Agent 通过 call_tool() 调用,自动记录 trace。
 每个工具的标准签名:
 
 ```python
-# src/evograph/agent/tools/github_fetcher.py
+# src/codegraph/agent/tools/github_fetcher.py
 
 async def fetch_repo_tree(repo_url: str) -> dict:
     """获取仓库文件树"""
@@ -173,7 +173,7 @@ async def fetch_readme(repo_url: str) -> dict:
 #### OverviewAgent (先看门道)
 
 ```python
-# src/evograph/agent/stages/overview_agent.py
+# src/codegraph/agent/stages/overview_agent.py
 
 class OverviewAgent(BaseAgent):
     """
@@ -220,7 +220,7 @@ class OverviewAgent(BaseAgent):
 #### MainFlowAgent (跑通主线)
 
 ```python
-# src/evograph/agent/stages/mainflow_agent.py
+# src/codegraph/agent/stages/mainflow_agent.py
 
 class MainFlowAgent(BaseAgent):
     """
@@ -276,7 +276,7 @@ class MainFlowAgent(BaseAgent):
 #### ShowcaseAgent (拆它绝活)
 
 ```python
-# src/evograph/agent/stages/showcase_agent.py
+# src/codegraph/agent/stages/showcase_agent.py
 
 class ShowcaseAgent(BaseAgent):
     """
@@ -297,7 +297,7 @@ class ShowcaseAgent(BaseAgent):
 #### TakeawayAgent (抄走一招)
 
 ```python
-# src/evograph/agent/stages/takeaway_agent.py
+# src/codegraph/agent/stages/takeaway_agent.py
 
 class TakeawayAgent(BaseAgent):
     """
@@ -317,7 +317,7 @@ class TakeawayAgent(BaseAgent):
 ### Orchestrator (编排层)
 
 ```python
-# src/evograph/agent/orchestrator.py
+# src/codegraph/agent/orchestrator.py
 
 class AnalysisOrchestrator:
     """
@@ -387,10 +387,10 @@ class AnalysisOrchestrator:
 ### API 层
 
 ```python
-# src/evograph/api/v1/analysis.py
+# src/codegraph/api/v1/analysis.py
 
 from fastapi import APIRouter, BackgroundTasks
-from evograph.agent.orchestrator import AnalysisOrchestrator
+from codegraph.agent.orchestrator import AnalysisOrchestrator
 
 router = APIRouter(prefix="/api/v1")
 
@@ -510,10 +510,10 @@ async def get_traces(task_id: str):
 - 硬编码 LLM key 到代码中(用 config.py)
 
 ✅ 允许:
-- 创建 src/evograph/agent/base.py
-- 创建 src/evograph/agent/stages/ 目录和4个 Agent 文件
-- 创建 src/evograph/agent/tools/ 目录,重构现有工具
-- 修改 src/evograph/agent/orchestrator.py
+- 创建 src/codegraph/agent/base.py
+- 创建 src/codegraph/agent/stages/ 目录和4个 Agent 文件
+- 创建 src/codegraph/agent/tools/ 目录,重构现有工具
+- 修改 src/codegraph/agent/orchestrator.py
 - 新增 API 路由文件
 - 修改 main.py 注册新路由
 ```

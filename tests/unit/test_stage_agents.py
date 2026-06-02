@@ -177,7 +177,7 @@ class MockLLM:
 
 @pytest.mark.asyncio
 async def test_fetch_repo_tree_local(tiny_repo: Path):
-    from evograph.agent.tools import fetch_repo_tree
+    from codegraph.agent.tools import fetch_repo_tree
 
     tree = await fetch_repo_tree(str(tiny_repo))
     files = tree["files"]
@@ -188,7 +188,7 @@ async def test_fetch_repo_tree_local(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_fetch_readme_local(tiny_repo: Path):
-    from evograph.agent.tools import fetch_readme, summarize_readme
+    from codegraph.agent.tools import fetch_readme, summarize_readme
 
     readme = await fetch_readme(str(tiny_repo))
     assert "TinyApp" in readme["content"]
@@ -199,7 +199,7 @@ async def test_fetch_readme_local(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_parse_code_structure(tiny_repo: Path):
-    from evograph.agent.tools import parse_code_structure
+    from codegraph.agent.tools import parse_code_structure
 
     py_files = ["src/main.py", "src/api/handler.py", "src/service/compute.py"]
     parsed = await parse_code_structure(str(tiny_repo), py_files)
@@ -213,7 +213,7 @@ async def test_parse_code_structure(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_detect_architecture(tiny_repo: Path):
-    from evograph.agent.tools import (
+    from codegraph.agent.tools import (
         detect_architecture,
         fetch_repo_tree,
         parse_code_structure,
@@ -233,7 +233,7 @@ async def test_detect_architecture(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_pattern_matcher_factory(tiny_repo: Path):
-    from evograph.agent.tools import match_patterns
+    from codegraph.agent.tools import match_patterns
 
     handler = (tiny_repo / "src" / "api" / "handler.py").read_text()
     out = await match_patterns(file_contents={"handler.py": handler})
@@ -243,7 +243,7 @@ async def test_pattern_matcher_factory(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_call_graph_tracer(tiny_repo: Path):
-    from evograph.agent.tools import trace_call_graph
+    from codegraph.agent.tools import trace_call_graph
 
     cg = await trace_call_graph(str(tiny_repo), max_depth=4, max_nodes=20)
     assert cg["entry_points"]
@@ -257,7 +257,7 @@ async def test_call_graph_tracer(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_base_agent_records_tool_call_trace():
-    from evograph.agent.base import BaseAgent
+    from codegraph.agent.base import BaseAgent
 
     async def echo(value):
         return {"echoed": value}
@@ -279,7 +279,7 @@ async def test_base_agent_records_tool_call_trace():
 
 @pytest.mark.asyncio
 async def test_base_agent_records_tool_failure_and_reraises():
-    from evograph.agent.base import BaseAgent
+    from codegraph.agent.base import BaseAgent
 
     async def boom():
         raise RuntimeError("nope")
@@ -297,7 +297,7 @@ async def test_base_agent_records_tool_failure_and_reraises():
 
 @pytest.mark.asyncio
 async def test_base_agent_call_llm_json_schema():
-    from evograph.agent.base import BaseAgent
+    from codegraph.agent.base import BaseAgent
 
     class Dummy(BaseAgent):
         async def analyze(self, context):
@@ -320,8 +320,8 @@ async def test_base_agent_call_llm_json_schema():
 
 @pytest.mark.asyncio
 async def test_overview_agent_against_tiny_repo(tiny_repo: Path):
-    from evograph.agent.stages import OverviewAgent
-    from evograph.agent.tools import STAGE_TOOLS
+    from codegraph.agent.stages import OverviewAgent
+    from codegraph.agent.tools import STAGE_TOOLS
 
     agent = OverviewAgent(STAGE_TOOLS, llm_client=MockLLM())
     out = await agent.run({"repo_url": str(tiny_repo)})
@@ -339,8 +339,8 @@ async def test_overview_agent_against_tiny_repo(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_mainflow_agent_against_tiny_repo(tiny_repo: Path):
-    from evograph.agent.stages import MainFlowAgent
-    from evograph.agent.tools import STAGE_TOOLS
+    from codegraph.agent.stages import MainFlowAgent
+    from codegraph.agent.tools import STAGE_TOOLS
 
     agent = MainFlowAgent(STAGE_TOOLS, llm_client=MockLLM())
     out = await agent.run(
@@ -356,8 +356,8 @@ async def test_mainflow_agent_against_tiny_repo(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_showcase_agent_against_tiny_repo(tiny_repo: Path):
-    from evograph.agent.stages import ShowcaseAgent
-    from evograph.agent.tools import STAGE_TOOLS
+    from codegraph.agent.stages import ShowcaseAgent
+    from codegraph.agent.tools import STAGE_TOOLS
 
     agent = ShowcaseAgent(STAGE_TOOLS, llm_client=MockLLM())
     out = await agent.run(
@@ -368,8 +368,8 @@ async def test_showcase_agent_against_tiny_repo(tiny_repo: Path):
 
 @pytest.mark.asyncio
 async def test_takeaway_agent_with_highlights():
-    from evograph.agent.stages import TakeawayAgent
-    from evograph.agent.tools import STAGE_TOOLS
+    from codegraph.agent.stages import TakeawayAgent
+    from codegraph.agent.tools import STAGE_TOOLS
 
     agent = TakeawayAgent(STAGE_TOOLS, llm_client=MockLLM())
     out = await agent.run(
@@ -390,8 +390,8 @@ async def test_takeaway_agent_with_highlights():
 
 @pytest.mark.asyncio
 async def test_takeaway_empty_highlights_returns_empty():
-    from evograph.agent.stages import TakeawayAgent
-    from evograph.agent.tools import STAGE_TOOLS
+    from codegraph.agent.stages import TakeawayAgent
+    from codegraph.agent.tools import STAGE_TOOLS
 
     agent = TakeawayAgent(STAGE_TOOLS, llm_client=MockLLM())
     out = await agent.run({"highlights": []})
@@ -403,7 +403,7 @@ async def test_takeaway_empty_highlights_returns_empty():
 
 @pytest.mark.asyncio
 async def test_orchestrator_full_pipeline(tiny_repo: Path):
-    from evograph.agent.analysis_orchestrator import AnalysisOrchestrator
+    from codegraph.agent.analysis_orchestrator import AnalysisOrchestrator
 
     orch = AnalysisOrchestrator(llm_client=MockLLM())
     progress: list = []
@@ -434,8 +434,8 @@ async def test_orchestrator_full_pipeline(tiny_repo: Path):
 @pytest.mark.asyncio
 async def test_orchestrator_isolates_stage_failure(tiny_repo: Path):
     """A failing stage must not abort the others."""
-    from evograph.agent.analysis_orchestrator import AnalysisOrchestrator
-    from evograph.agent.stages import ShowcaseAgent
+    from codegraph.agent.analysis_orchestrator import AnalysisOrchestrator
+    from codegraph.agent.stages import ShowcaseAgent
 
     class BoomShowcase(ShowcaseAgent):
         async def analyze(self, context):
@@ -459,8 +459,8 @@ async def test_orchestrator_isolates_stage_failure(tiny_repo: Path):
 @pytest.mark.asyncio
 async def test_analysis_store_falls_back_to_dict(monkeypatch):
     """When Redis is unreachable, store should silently fall back to the dict."""
-    from evograph.agent.analysis_store import AnalysisStore
-    from evograph.storage import redis_cache
+    from codegraph.agent.analysis_store import AnalysisStore
+    from codegraph.storage import redis_cache
 
     async def boom_get(key):
         raise RuntimeError("redis down")

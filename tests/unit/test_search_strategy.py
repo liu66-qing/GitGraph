@@ -2,7 +2,7 @@
 
 import pytest
 
-from evograph.agent.search_strategy import RelevanceScorer, SaturationDetector
+from codegraph.agent.search_strategy import RelevanceScorer, SaturationDetector
 
 
 class TestRelevanceScorer:

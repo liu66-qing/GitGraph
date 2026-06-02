@@ -2,7 +2,7 @@
 
 import pytest
 
-from evograph.evolution.extractor import RobustJsonParser
+from codegraph.evolution.extractor import RobustJsonParser
 
 
 @pytest.fixture

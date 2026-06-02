@@ -2,7 +2,7 @@
 
 import pytest
 
-from evograph.agent.memory import SessionMemory, get_session
+from codegraph.agent.memory import SessionMemory, get_session
 
 
 class TestSessionMemory:

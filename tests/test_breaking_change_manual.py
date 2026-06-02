@@ -10,8 +10,8 @@ def Field(default=None, default_factory=None, **kw):
 pyd.BaseModel=BaseModel; pyd.Field=Field
 sys.modules["pydantic"]=pyd
 
-from evograph.ingestion.git_loader import iter_history, list_commits
-from evograph.evolution.breaking_change_detector import scan_history
+from codegraph.ingestion.git_loader import iter_history, list_commits
+from codegraph.evolution.breaking_change_detector import scan_history
 
 REPO="/tmp/demo_repo"
 print("=== commits ===")

@@ -5,12 +5,12 @@ services:
       - "7474:7474"
       - "7687:7687"
     environment:
-      NEO4J_AUTH: neo4j/evograph123
+      NEO4J_AUTH: neo4j/codegraph123
       NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
     volumes:
       - neo4j_data:/data
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "evograph123", "RETURN 1"]
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "codegraph123", "RETURN 1"]
       interval: 10s
       retries: 5
 
@@ -19,13 +19,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: evograph
-      POSTGRES_USER: evograph
-      POSTGRES_PASSWORD: evograph123
+      POSTGRES_DB: codegraph
+      POSTGRES_USER: codegraph
+      POSTGRES_PASSWORD: codegraph123
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U evograph"]
+      test: ["CMD-SHELL", "pg_isready -U codegraph"]
       interval: 5s
       retries: 5
 

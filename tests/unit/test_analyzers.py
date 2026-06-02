@@ -10,19 +10,19 @@ from __future__ import annotations
 
 import pytest
 
-from evograph.agent.analyzers.graph_view import CodeGraphView, GraphNode, GraphEdge
-from evograph.agent.analyzers import architecture_analyzer as A
-from evograph.agent.analyzers import tour_builder as T
-from evograph.agent.analyzers import graph_reviewer as R
-from evograph.agent.analyzers import learning_path as LP
-from evograph.agent.analyzers import module_cards as MC
-from evograph.agent.analyzers import test_association as TA
+from codegraph.agent.analyzers.graph_view import CodeGraphView, GraphNode, GraphEdge
+from codegraph.agent.analyzers import architecture_analyzer as A
+from codegraph.agent.analyzers import tour_builder as T
+from codegraph.agent.analyzers import graph_reviewer as R
+from codegraph.agent.analyzers import learning_path as LP
+from codegraph.agent.analyzers import module_cards as MC
+from codegraph.agent.analyzers import test_association as TA
 
 
 @pytest.fixture(autouse=True)
 def _no_llm(monkeypatch):
     """Force the heuristic/structural fallback so tests never hit the network."""
-    from evograph.config import settings
+    from codegraph.config import settings
     monkeypatch.setattr(settings, "llm_api_key", "", raising=False)
 
 

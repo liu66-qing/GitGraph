@@ -2,7 +2,7 @@
 
 import pytest
 
-from evograph.ingestion.douyin_loader import DouyinLoader
+from codegraph.ingestion.douyin_loader import DouyinLoader
 
 
 @pytest.fixture

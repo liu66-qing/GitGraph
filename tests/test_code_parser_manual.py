@@ -3,7 +3,7 @@
 import sys
 sys.path.insert(0, "/sessions/magical-confident-noether/mnt/RAG/src")
 
-from evograph.ingestion.code_parser import parse_python_source
+from codegraph.ingestion.code_parser import parse_python_source
 
 SAMPLE = '''
 """Sample module docstring."""
