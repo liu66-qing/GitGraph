@@ -13,6 +13,8 @@ venv/
 # Environment
 .env
 .env.local
+.env.*.bak
+*.bak
 
 # IDE
 .idea/
@@ -37,3 +39,6 @@ frontend/dist/
 # OS
 .DS_Store
 Thumbs.db
+docs/screenshots/
+docs/evograph-demo-*/
+docs/lo-test/

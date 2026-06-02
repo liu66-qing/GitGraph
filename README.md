@@ -1,7 +1,7 @@
 # CodeGraph
 
 <div align="center">
-  <img src="./github标题背景图.png" alt="CodeGraph - Transform Complex Repositories into Learning Adventures" width="100%">
+  <img src="./docs/assets/github标题背景图.png" alt="CodeGraph - Transform Complex Repositories into Learning Adventures" width="100%">
   
   **🎮 Transform Complex Repositories into Pixel Game Learning Adventures**
   
