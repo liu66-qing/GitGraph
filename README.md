@@ -1,231 +1,151 @@
 # CodeGraph
 
 <div align="center">
-  <img src="./docs/assets/en/hero-banner.png" alt="CodeGraph - Helping Every Hometown Hero Understand Code" width="100%">
-  
-  <h3>🎮 Turn Complex GitHub Repos into Guided Learning Adventures</h3>
-  
+  <img src="./docs/assets/en/hero-banner.png" alt="CodeGraph - helping developers understand codebases" width="100%">
+
+  <h3>Stop wandering through giant repos. Turn any GitHub codebase into a guided learning map.</h3>
+
   <p>
-    <img src="https://img.shields.io/badge/Architecture-Multi--Agent-ff6b6b?style=flat-square&logo=buffer" alt="Multi-Agent">
-    <img src="https://img.shields.io/badge/Agents-4%20Stage%20%2B%2015%20Tools-f59e0b?style=flat-square" alt="4 Agents + 15 Tools">
-    <img src="https://img.shields.io/badge/RAG-Graph%20Enhanced-7c3aed?style=flat-square&logo=neo4j" alt="Graph Enhanced RAG">
-    <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb?style=flat-square&logo=react" alt="React">
-    <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square" alt="License">
+    <a href="./README.zh.md">中文</a> ·
+    <a href="https://code-graph-five.vercel.app/">Live Demo</a> ·
+    <a href="https://code-graph-five.vercel.app/map">Learning Map</a> ·
+    <a href="#contributing">Contribute</a>
   </p>
 
   <p>
-    <a href="./README.md">English</a> · <a href="./README.zh.md">中文</a> · <a href="https://code-graph-five.vercel.app/" target="_blank">Live Demo</a>
+    <img src="https://img.shields.io/badge/AI-Codebase%20Understanding-111827?style=flat-square" alt="AI Codebase Understanding">
+    <img src="https://img.shields.io/badge/Workflow-4%20Stage%20Learning%20Path-f59e0b?style=flat-square" alt="4 Stage Learning Path">
+    <img src="https://img.shields.io/badge/RAG-Graph%20Enhanced-7c3aed?style=flat-square" alt="Graph Enhanced RAG">
+    <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb?style=flat-square" alt="React + Vite">
+    <img src="https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square" alt="FastAPI">
+    <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square" alt="Apache 2.0">
   </p>
 </div>
 
----
+## Why This Exists
 
-## The Problem
+Large open-source repositories are full of hard-won engineering wisdom, but most developers never get past the file tree.
 
-You want to learn from **facebook/react** or **langchain-ai/langchain**. You open the repo — 2000+ files stare back at you.
+You open `react`, `vscode`, or `langchain`, and the same questions show up:
 
-The README explains *how to use it*, not *how to read it*.
+- Where should I start?
+- Which files actually matter?
+- How does the main execution flow work?
+- What design tricks are worth learning?
+- How do I turn this repo into something I can contribute to?
 
-Where do you start? Which modules matter? How does the call chain flow? Where's the core design?
+Traditional code search gives you fragments. A normal README tells you how to use the project, not how to read it.
 
-**Traditional approaches fall short:**
-- Read the README → lost in the file tree
-- Search keywords → fragmented understanding, no big picture
-- Ask ChatGPT → generic answers that don't know where *you're* stuck
+**CodeGraph turns a repository into a staged learning journey: overview first, main flow second, implementation tricks third, reusable takeaways last.**
 
-**CodeGraph's answer: Turn repos into guided learning journeys with AI agents leading the way.**
+If that sounds useful, please consider giving the repo a star. It helps more developers discover the project, and it tells me which direction is worth building next.
 
-Instead of dumping code into a vector database and hoping for the best, CodeGraph uses a **Multi-Agent orchestration system** to analyze the repo first, then packages structured insights into 4 progressive stages that take you from high-level positioning → running the main flow → dissecting core tricks → extracting reusable patterns.
+## What CodeGraph Does
 
----
+CodeGraph is an AI codebase learning assistant. Paste a GitHub repository URL, and it helps you explore the project like a guided map instead of a raw file tree.
 
-## How It Works: 4-Stage Learning Journey
+| Stage | Question It Answers | Output |
+| --- | --- | --- |
+| **1. Overview** | What is this repo, and how is it organized? | Positioning, tech stack, module map, architecture summary |
+| **2. Main Flow** | How does the core path run? | Entry points, call flow, key logic, execution route |
+| **3. Showcase** | What implementation ideas are worth stealing? | Patterns, abstractions, design highlights, tradeoffs |
+| **4. Takeaway** | What can I reuse in my own project? | Practice cards, migration ideas, reusable mental models |
 
-CodeGraph breaks complex repos into 4 game-like stages you complete in order:
+It is not trying to be another generic chatbot over code. The goal is sharper:
 
-| Stage | Goal | What You Get |
-|-------|------|-------------|
-| **① Overview** | Build global understanding fast | Project positioning, tech stack, architecture overview, key modules |
-| **② Main Flow** | Understand core execution | Entry files, main call chain, key logic breakdown |
-| **③ Showcase** | Dissect design worth stealing | Implementation patterns, abstractions, engineering tricks, trade-offs |
-| **④ Takeaway** | Extract reusable methods | Practice cards, migration scenarios, code templates |
+> Help developers understand unfamiliar repositories fast enough to learn from them, modify them, and contribute back.
 
-**This isn't a doc generator. It's a learning path generator.**
+## Demo
 
-> 🎯 **[Try the Live Demo](https://code-graph-five.vercel.app/)** — Input any GitHub repo and explore its learning journey in real-time.
+Try the hosted frontend:
 
----
+- [Live Demo](https://code-graph-five.vercel.app/)
+- [Learning Map](https://code-graph-five.vercel.app/map)
 
-## Multi-Agent Architecture: Why Not Just RAG?
-
-CodeGraph's core is a **4-stage Agent orchestration system**, not simple RAG Q&A.
-
-### Agent vs RAG
-
-| Dimension | Traditional RAG | CodeGraph Multi-Agent |
-|-----------|----------------|----------------------|
-| **Workflow** | Query → Retrieve → Generate | Query → **Plan** → **Tool Selection** → **Parallel Execution** → **Context Passing** |
-| **Collaboration** | Single-turn, stateless | 4-stage orchestration with explicit context handoff |
-| **Parallelism** | None | MainFlow + Showcase run concurrently |
-| **Fault Tolerance** | Fails immediately | Error isolation — one Agent failure doesn't block others |
-| **Observability** | Black box | Full Trace (tool calls + reasoning + dependency graph) |
-
-### System Architecture
-
-```
-User inputs GitHub URL
-        ↓
-  ┌──────────────┐
-  │ Orchestrator │  ← Coordinates 4 Agents, manages context flow
-  └──────┬───────┘
-         │
-    ┌────┴────┐
-    ↓         ↓
-┌─────────┐ ┌─────────┐
-│Overview │ │MainFlow │  ← Parallel execution
-│  Agent  │ │  Agent  │
-│ Stage ① │ │ Stage ② │
-└────┬────┘ └────┬────┘
-     │           │
-     └─────┬─────┘
-           ↓
-    context passing
-      (architectureSummary → flowNodes)
-           │
-           ↓
-    ┌──────────┐
-    │ Showcase │
-    │  Agent   │  ← Deep analysis based on prior outputs
-    │ Stage ③  │
-    └─────┬────┘
-          │
-          ↓
-   ┌──────────┐
-   │ Takeaway │
-   │  Agent   │  ← Extract reusable methods
-   │ Stage ④  │
-   └──────────┘
-          │
-          ↓
-      15+ Tools
-   (arch detection / call graph /
-    pattern matching / test linking...)
-```
-
-**Key Features:**
-- ✅ **Explicit Orchestration**: OverviewAgent output → downstream Agent input (not implicit prompt concat)
-- ✅ **Parallel Speedup**: MainFlow + Showcase run concurrently (40% time saved)
-- ✅ **Failure Isolation**: Single stage error → degrades to error stub, others continue
-- ✅ **Tool Ecosystem**: 15+ specialized tools (arch detection, call graph tracer, pattern matcher, README summarizer...)
-- ✅ **Full Trace**: Records each Agent's reasoning, tool calls, execution time, dependencies
-
----
+Note: the public demo currently focuses on the frontend experience. Full repository analysis, graph retrieval, and AI Q&A require running the backend services locally.
 
 ## Screenshots
 
-### Homepage: Input Repo, Start Exploring
+### Home
 
-<img src="./docs/design/en/home.png" alt="CodeGraph Homepage" width="100%">
+<img src="./docs/design/en/home.png" alt="CodeGraph home page" width="100%">
 
-### Learning Journey Map: 4-Stage Visual Path
+### Learning Map
 
-<img src="./docs/design/en/learning-map.png" alt="Learning Map" width="100%">
+<img src="./docs/design/en/learning-map.png" alt="CodeGraph learning map" width="100%">
 
-### Four Learning Stage Pages
+### Stage Pages
 
 <table>
   <tr>
     <td width="50%">
-      <img src="./docs/design/en/stage1-overview.png" alt="Overview">
-      <p align="center"><strong>① Overview</strong> - Build global understanding</p>
+      <img src="./docs/design/en/stage1-overview.png" alt="Overview stage">
+      <p align="center"><strong>Overview</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/en/stage2-mainflow.png" alt="Main Flow">
-      <p align="center"><strong>② Main Flow</strong> - Understand execution</p>
+      <img src="./docs/design/en/stage2-mainflow.png" alt="Main Flow stage">
+      <p align="center"><strong>Main Flow</strong></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="./docs/design/en/stage3-showcase.png" alt="Showcase">
-      <p align="center"><strong>③ Showcase</strong> - Dissect core tricks</p>
+      <img src="./docs/design/en/stage3-showcase.png" alt="Showcase stage">
+      <p align="center"><strong>Showcase</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/en/stage4-takeaway.png" alt="Takeaway">
-      <p align="center"><strong>④ Takeaway</strong> - Extract methods</p>
+      <img src="./docs/design/en/stage4-takeaway.png" alt="Takeaway stage">
+      <p align="center"><strong>Takeaway</strong></p>
     </td>
   </tr>
 </table>
 
----
+## Why It Is Different From Basic RAG
 
-## Technical Highlights
+Most code RAG demos do this:
 
-### 1. Multi-Agent Orchestration
-
-```python
-# Core orchestration logic
-class AnalysisOrchestrator:
-    async def analyze_repo(self, repo_url: str) -> dict:
-        # Stage 1: Overview
-        overview = await self.overview_agent.run(context)
-        context["architectureSummary"] = overview["architectureSummary"]
-        
-        # Stage 2 & 3: Parallel execution
-        mainflow, showcase = await asyncio.gather(
-            self.mainflow_agent.run(context),
-            self.showcase_agent.run(context)
-        )
-        
-        # Stage 4: Takeaway
-        context["flowNodes"] = mainflow["flowNodes"]
-        context["highlights"] = showcase["highlights"]
-        takeaway = await self.takeaway_agent.run(context)
-        
-        return {
-            "overview": overview,
-            "mainflow": mainflow,
-            "showcase": showcase,
-            "takeaway": takeaway,
-            "_traces": self._collect_traces()  # Full execution trace
-        }
+```text
+chunk files -> embed chunks -> retrieve similar text -> answer
 ```
 
-### 2. Tool Execution Transparency
+That is useful, but it misses structure. Code is not just text. Code has modules, call chains, dependencies, entry points, tests, and architectural boundaries.
 
-Every tool call is tracked:
+CodeGraph is designed around structured understanding:
 
-```python
-# Auto-collected stats
-tool_stats_collector.record_call(
-    tool_name="architecture_detector",
-    duration_ms=245.7,
-    success=True,
-    agent_name="overview"
-)
+- **Graph-aware retrieval**: combines semantic search with code relationships.
+- **Stage-specific agents**: overview, main flow, showcase, and takeaway each ask different questions.
+- **Learning-first output**: optimized for onboarding and understanding, not just isolated Q&A.
+- **Visual journey UI**: the repo becomes a path you can follow, not a wall of folders.
 
-# Query API
-GET /api/v1/agent/tools/stats
-→ {
-    "top_tools": [
-        {"tool_name": "fetch_readme", "call_count": 847, "avg_duration_ms": 120.5},
-        {"tool_name": "parse_tree", "call_count": 682, "avg_duration_ms": 89.2}
-    ],
-    "dependency_graph": {
-        "architecture_detector": ["fetch_readme", "parse_tree"],
-        "call_graph_tracer": ["find_entry_points", "trace_calls"]
-    }
-}
+## Architecture
+
+```mermaid
+flowchart LR
+  A["GitHub Repository"] --> B["Ingestion & Code Parsing"]
+  B --> C["Code Metadata"]
+  B --> D["Code Graph"]
+  C --> E["Hybrid Retrieval"]
+  D --> E
+  E --> F["Stage Agents"]
+  F --> G["Overview"]
+  F --> H["Main Flow"]
+  F --> I["Showcase"]
+  F --> J["Takeaway"]
+  G --> K["Learning Map UI"]
+  H --> K
+  I --> K
+  J --> K
 ```
 
-### 3. Graph-Enhanced RAG
+## Tech Stack
 
-Not just vector search — combines graph traversal to understand code structure:
-
-- **Neo4j Knowledge Graph**: Function call chains, dependencies, concept maps
-- **Hybrid Retrieval**: Graph traversal + vector similarity + keyword matching
-- **Structured Recall**: Prioritizes code "called by current function" over "semantically similar but unrelated"
-
----
+| Layer | Stack |
+| --- | --- |
+| Frontend | React, TypeScript, Vite, Mantine, pixel-style UI |
+| Backend | FastAPI, Python 3.11 |
+| Retrieval | Hybrid retrieval, vector search, keyword retrieval |
+| Graph | Neo4j-style code relationship modeling |
+| Agent layer | Stage agents, orchestration, structured outputs |
+| DevOps | Docker Compose, Vercel-ready frontend |
 
 ## Quick Start
 
@@ -233,106 +153,94 @@ Not just vector search — combines graph traversal to understand code structure
 
 - Python 3.11+
 - Node.js 18+
-- Docker & Docker Compose
-- Claude API Key (or other OpenAI-compatible API)
+- Docker and Docker Compose
+- An OpenAI-compatible API key
 
-### 1. Clone
+### Clone
 
 ```bash
 git clone https://github.com/liu66-qing/CodeGraph.git
 cd CodeGraph
 ```
 
-### 2. Configure
+### Configure
 
 ```bash
 cp .env.example .env
-# Edit .env, add your API key
 ```
 
-### 3. Run
+Edit `.env` with your model and service settings.
+
+### Start Infrastructure
 
 ```bash
-# Start infrastructure (Neo4j + Redis)
 docker-compose up -d
+```
 
-# Start backend
+### Start Backend
+
+```bash
 pip install -e ".[dev]"
-uvicorn codegraph.main:app --reload --port 8000
+uvicorn evograph.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-# Start frontend
+### Start Frontend
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Visit `http://localhost:5173`, input a GitHub repo URL, and start exploring.
-
----
+Open `http://localhost:5173`.
 
 ## Project Structure
 
-```
-CodeGraph/
+```text
+.
 ├── frontend/              # React + Vite frontend
-│   ├── src/pages/         # 6 pages (Home + Map + 4 Stages)
-│   └── src/components/    # Pixel UI components
-├── src/codegraph/         # FastAPI backend
-│   ├── agent/             # Multi-Agent system
-│   │   ├── analysis_orchestrator.py   # 4-stage orchestrator
-│   │   ├── stages/        # 4 Stage Agents
-│   │   ├── tools/         # 15+ specialized tools
-│   │   └── tools/stats.py # Tool execution stats
-│   ├── api/v1/            # REST API
-│   ├── graph/             # Neo4j graph operations
-│   ├── retrieval/         # Graph-Enhanced RAG
-│   └── ingestion/         # Code parsing & ingestion
-├── docs/design/           # PRD + prototypes
-└── tests/                 # Unit + integration tests
+├── src/evograph/          # FastAPI, agents, RAG, graph, ingestion
+├── tests/                 # Unit and integration tests
+├── docs/                  # Design docs, screenshots, README assets
+├── alembic/               # Database migrations
+├── docker-compose.yml     # Local infrastructure
+└── pyproject.toml         # Python project metadata
 ```
-
----
-
-## Who Is This For?
-
-- **Learners** - Want to quickly understand large open-source projects (React/Vue/LangChain...)
-- **Team Leads** - Want to create learning paths for their team's onboarding
-- **Developers** - Want to study Multi-Agent + Graph RAG in code understanding scenarios
-- **Researchers** - Want to explore Agent orchestration, tool calling, knowledge graphs in production
-
----
 
 ## Roadmap
 
-- [ ] Support more languages (currently focused on TypeScript/JavaScript/Python)
-- [ ] Agent reasoning visualization (real-time Trace rendering)
-- [ ] Interactive tool dependency graph explorer
-- [ ] Export learning paths (PDF/Markdown)
-- [ ] Team collaboration: multiple people learning one repo together
-
----
+- [ ] Better support for large TypeScript / Python repositories
+- [ ] More accurate call-chain and module relationship extraction
+- [ ] GitHub issue and PR context analysis
+- [ ] Exportable learning reports in Markdown / PDF
+- [ ] Public backend deployment for end-to-end hosted demos
+- [ ] More examples from real-world open-source projects
 
 ## Contributing
 
-We welcome contributions! Whether it's:
-- 🐛 Bug reports
-- 💡 Feature requests
-- 📖 Documentation improvements
-- 🔧 Code contributions
+CodeGraph is early, and the best contributions right now are concrete and practical:
 
-Please see our [Contributing Guide](./CONTRIBUTING.md) (coming soon) or open an issue to get started.
+- Star the project if the idea resonates.
+- Open an issue with a repo you want CodeGraph to understand better.
+- Suggest a better learning-stage design.
+- Contribute analyzers for new languages or frameworks.
+- Improve prompts, screenshots, docs, or onboarding.
 
----
+Good first issues to propose:
+
+- "Add support for analyzing Next.js App Router repos"
+- "Improve call flow extraction for FastAPI projects"
+- "Add a sample analysis for LangChain"
+- "Export learning path as Markdown"
 
 ## License
 
-Apache-2.0 License - See [LICENSE](./LICENSE)
+Apache-2.0. See [LICENSE](./LICENSE).
 
 ---
 
 <div align="center">
-  <p><strong>CodeGraph: Helping Every Hometown Hero Understand Code</strong></p>
-  <p>Made with ❤️ by developers who believe great code deserves great guides</p>
-  
-  ⭐ **Star us if this project helped you learn!**
+  <strong>If CodeGraph helps you read one scary repo faster, please leave a star.</strong>
+  <br>
+  Stars, issues, and PRs are the signal that this should keep growing.
 </div>

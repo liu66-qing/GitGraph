@@ -76,7 +76,7 @@ const rewardCards = [
 
 export default function Home() {
   const navigate = useNavigate()
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
   const [url, setUrl] = useState('')
   const [phase, setPhase] = useState<Phase>('idle')
   const [repos, setRepos] = useState<RepoSummary[]>([])
@@ -120,11 +120,30 @@ export default function Home() {
     <main className="cg-home">
       <div className="cg-upper" style={{ backgroundImage: `url(${heroSkyBg})` }}>
         <div className="home-inner">
-          <section className="cg-hero" aria-label={t('home.heroAria')}>
+          <section
+            className={`cg-hero ${lang === 'en' ? 'is-english' : 'is-chinese'}`}
+            aria-label={t('home.heroAria')}
+          >
             <div className="cg-tree-badge" />
-            <h1 className="cg-pixel-title" aria-label={t('home.titleAria')}>
-              <span className="cg-brand-word">CodeGraph</span>
-              <span className="cg-title-cn">{t('home.title.cn')}<span>{t('home.title.cn2')}</span></span>
+            <h1
+              className={`cg-pixel-title ${lang === 'en' ? 'is-english' : 'is-chinese'}`}
+              aria-label={t('home.titleAria')}
+            >
+              {lang === 'en' ? (
+                <>
+                  <span className="cg-code-marks" aria-hidden="true">&lt;/&gt;</span>
+                  <span className="cg-brand-word">CodeGraph</span>
+                  <span className="cg-code-marks" aria-hidden="true">&lt;/&gt;</span>
+                  <span className="cg-title-en-line">Helping Every</span>
+                  <span className="cg-title-en-line is-accent">Hometown Hero</span>
+                  <span className="cg-title-en-line">Understand Code!</span>
+                </>
+              ) : (
+                <>
+                  <span className="cg-brand-word">CodeGraph</span>
+                  <span className="cg-title-cn">{t('home.title.cn')}<span>{t('home.title.cn2')}</span></span>
+                </>
+              )}
             </h1>
             <p className="cg-subtitle">{t('home.subtitle')}</p>
 

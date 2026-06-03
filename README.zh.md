@@ -1,227 +1,155 @@
 # CodeGraph
 
 <div align="center">
-  <img src="./docs/assets/github标题背景图.png" alt="CodeGraph - 让每个老乡看懂好仓库" width="100%">
-  
-  <h3>🎮 把复杂 GitHub 仓库变成一条可探索的学习旅程</h3>
-  
+  <img src="./docs/assets/github标题背景图.png" alt="CodeGraph - 把复杂仓库变成学习地图" width="100%">
+
+  <h3>别再硬啃大仓库了。把 GitHub 项目变成一张能跟着走的源码学习地图。</h3>
+
   <p>
-    <img src="https://img.shields.io/badge/Architecture-Multi--Agent-ff6b6b?style=flat-square&logo=buffer" alt="Multi-Agent">
-    <img src="https://img.shields.io/badge/Agents-4%20Stage%20%2B%2015%20Tools-f59e0b?style=flat-square" alt="4 Agents + 15 Tools">
-    <img src="https://img.shields.io/badge/RAG-Graph%20Enhanced-7c3aed?style=flat-square&logo=neo4j" alt="Graph Enhanced RAG">
-    <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb?style=flat-square&logo=react" alt="React">
-    <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square" alt="License">
+    <a href="./README.md">English</a> ·
+    <a href="https://code-graph-five.vercel.app/">在线 Demo</a> ·
+    <a href="https://code-graph-five.vercel.app/map">学习地图</a> ·
+    <a href="#如何参与">参与共建</a>
   </p>
 
   <p>
-    <a href="./README.md">English</a> · <a href="./README.zh.md">中文</a> · <a href="https://code-graph-five.vercel.app/" target="_blank">在线 Demo</a>
+    <img src="https://img.shields.io/badge/场景-源码学习-111827?style=flat-square" alt="源码学习">
+    <img src="https://img.shields.io/badge/路线-四阶段学习地图-f59e0b?style=flat-square" alt="四阶段学习地图">
+    <img src="https://img.shields.io/badge/RAG-图增强检索-7c3aed?style=flat-square" alt="图增强检索">
+    <img src="https://img.shields.io/badge/前端-React%20%2B%20Vite-61dafb?style=flat-square" alt="React + Vite">
+    <img src="https://img.shields.io/badge/后端-FastAPI-009688?style=flat-square" alt="FastAPI">
+    <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square" alt="Apache 2.0">
   </p>
 </div>
 
----
+## 你是不是也这样读源码？
 
-## 为什么做 CodeGraph？
+你想学习 `React`、`Vue`、`VS Code`、`LangChain` 这种优秀项目。
 
-**学习优秀开源项目很难。**
+然后打开仓库，几千个文件扑面而来。
 
-你打开 `facebook/react` 或 `langchain-ai/langchain`，2000+ 文件扑面而来。README 只讲怎么用，没说怎么读。从哪开始？哪些模块重要？调用链怎么走？核心设计在哪？
+README 告诉你怎么安装、怎么用，但没人告诉你：
 
-传统方式是：
-- 硬啃 README → 迷失在文件树里
-- 搜索关键词 → 碎片化，建立不了全局认知
-- 问 ChatGPT → 回答泛泛，不理解你卡在哪
+- 第一个应该看哪个文件？
+- 主流程从哪里开始跑？
+- 哪些模块是真的核心？
+- 哪些设计值得抄到自己的项目里？
+- 我要怎么从“看不懂”走到“能提 PR”？
 
-**CodeGraph 的答案：把仓库变成一条有导游的学习路径。**
+结果往往是：
 
-不是把代码塞进向量库让你自己问，而是**用 Multi-Agent 系统先拆解仓库**，再把结构化的认知打包成 4 个阶段，带你从全局认知 → 跑通主线 → 拆解绝活 → 沉淀方法。
+- 收藏了很多仓库，但真正读完的不多。
+- 看了很多源码解析文章，但换个项目又迷路。
+- 问 AI 一堆问题，答案看似有用，最后还是缺一张全局地图。
 
----
+**CodeGraph 想解决的就是这个痛点：把复杂 GitHub 仓库变成一条可视化、分阶段、能推进的源码学习路线。**
 
-## 学习旅程设计
+如果你也觉得“读懂优秀项目”这件事应该变得更简单，欢迎给这个仓库点个 Star。Star 是我继续把它做下去的最大动力。
 
-CodeGraph 把复杂仓库拆成 4 个闯关式学习阶段：
+## CodeGraph 是什么？
 
-| 阶段 | 目标 | 你会得到什么 |
-|------|------|-------------|
-| **① 先看门道** | 快速建立全局认知 | 项目定位、技术栈、架构三件套、关键模块目录 |
-| **② 跑通主线** | 理解核心执行流程 | 入口文件、主流程调用链、关键逻辑拆解 |
-| **③ 拆它绝活** | 拆解值得偷的设计 | 核心实现模式、抽象设计、工程技巧、关键权衡 |
-| **④ 抄走一招** | 迁移到自己项目 | 可复用的实践卡片、迁移场景、代码模板 |
+CodeGraph 是一个面向源码学习的 AI 代码理解平台。
 
-**这不是文档生成器，是学习路径生成器。**
+它不是单纯的“代码问答机器人”，而是先帮你建立项目地图，再带你按阶段理解：
 
----
+| 阶段 | 解决的问题 | 你会得到什么 |
+| --- | --- | --- |
+| **1. 先看门道** | 这个项目到底是干什么的？结构怎么分？ | 项目定位、技术栈、目录结构、核心模块 |
+| **2. 跑通主线** | 项目的主流程怎么跑起来？ | 入口文件、调用链、关键逻辑、执行路径 |
+| **3. 拆它绝活** | 这个项目有哪些值得学的设计？ | 抽象方式、实现技巧、工程取舍、亮点模块 |
+| **4. 抄走一招** | 我能把什么迁移到自己的项目？ | 可复用方法、实践卡片、改造建议 |
 
-## Multi-Agent 架构：为什么不是传统 RAG？
+一句话：
 
-CodeGraph 的核心是 **4-stage Agent 编排系统**，而非简单的 RAG 问答。
+> CodeGraph 不是帮你“搜答案”，而是帮你“读懂一个仓库”。
 
-### Agent vs RAG 对比
+## 在线体验
 
-| 维度 | 传统 RAG | CodeGraph Multi-Agent |
-|------|----------|----------------------|
-| **工作流** | Query → 检索 → 生成 | Query → **规划** → **工具选择** → **并行执行** → **上下文传递** |
-| **协作** | 单轮对话，无状态 | 4-stage 编排，显式上下文传递 |
-| **并行** | 无 | MainFlow + Showcase 并行分析 |
-| **容错** | 失败即停 | 错误隔离，单 Agent 失败不影响其他 |
-| **可观测** | 黑盒 | 完整 Trace（工具调用 + 推理过程 + 依赖图） |
+- [在线 Demo](https://code-graph-five.vercel.app/)
+- [学习地图页](https://code-graph-five.vercel.app/map)
 
-### 系统架构
+说明：当前在线 Demo 主要展示前端体验和产品形态；完整仓库分析、AI 问答、图谱检索能力需要在本地启动后端服务。
 
-```
-用户输入 GitHub URL
-        ↓
-  ┌──────────────┐
-  │ Orchestrator │  ← 协调 4 个 Agent，管理上下文传递
-  └──────┬───────┘
-         │
-    ┌────┴────┐
-    ↓         ↓
-┌─────────┐ ┌─────────┐
-│Overview │ │MainFlow │  ← 并行执行
-│  Agent  │ │  Agent  │
-│ 先看门道 │ │ 跑通主线 │
-└────┬────┘ └────┬────┘
-     │           │
-     └─────┬─────┘
-           ↓
-    context passing
-      (architectureSummary → flowNodes)
-           │
-           ↓
-    ┌──────────┐
-    │ Showcase │
-    │  Agent   │  ← 基于前面的输出深入分析
-    │ 拆它绝活  │
-    └─────┬────┘
-          │
-          ↓
-   ┌──────────┐
-   │ Takeaway │
-   │  Agent   │  ← 提炼可复用方法
-   │ 抄走一招  │
-   └──────────┘
-          │
-          ↓
-      15+ Tools
-   (架构检测/调用图/
-    模式匹配/测试关联...)
-```
+## 效果预览
 
-**核心特性：**
-- ✅ **显式编排**：OverviewAgent 输出 → 下游 Agent 输入（非隐式 prompt 拼接）
-- ✅ **并行加速**：MainFlow 和 Showcase 同时分析（节省 40% 时间）
-- ✅ **失败隔离**：单个 stage 错误 → 降级为 error stub，其他继续
-- ✅ **工具生态**：15+ 专用工具（架构检测、调用图追踪、模式匹配、README 摘要...）
-- ✅ **完整 Trace**：记录每个 Agent 的推理过程、工具调用、执行时间、依赖关系
+### 真实学习路径页
 
----
+![CodeGraph 学习路径页](./docs/assets/learning-path-page.png)
 
-## 界面预览
-
-### 首页：输入仓库，开始探索
-
-<img src="./docs/design/首页原型图.png" alt="CodeGraph 首页" width="100%">
-
-### 学习旅程地图：4 阶段可视化路径
-
-<img src="./docs/design/学习地图原型图.png" alt="学习地图" width="100%">
-
-### 四个学习阶段页面
+### 首页与四阶段页面
 
 <table>
   <tr>
     <td width="50%">
-      <img src="./docs/design/先看门道原型图.png" alt="先看门道">
-      <p align="center"><strong>① 先看门道</strong> - 快速建立全局认知</p>
+      <img src="./docs/design/en/home.png" alt="首页">
+      <p align="center"><strong>首页：输入仓库，开始探索</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/跑通主线原型图.png" alt="跑通主线">
-      <p align="center"><strong>② 跑通主线</strong> - 理解核心执行流程</p>
+      <img src="./docs/design/en/learning-map.png" alt="学习地图">
+      <p align="center"><strong>学习地图：四阶段路线</strong></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="./docs/design/拆它绝活原型图.png" alt="拆它绝活">
-      <p align="center"><strong>③ 拆它绝活</strong> - 拆解值得偷的设计</p>
+      <img src="./docs/design/en/stage1-overview.png" alt="先看门道">
+      <p align="center"><strong>先看门道</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/抄走一招原型图.png" alt="抄走一招">
-      <p align="center"><strong>④ 抄走一招</strong> - 迁移到自己项目</p>
+      <img src="./docs/design/en/stage2-mainflow.png" alt="跑通主线">
+      <p align="center"><strong>跑通主线</strong></p>
     </td>
   </tr>
 </table>
 
----
+## 为什么不是普通 RAG？
 
-## 技术亮点
+很多代码 RAG 项目做的是：
 
-### 1. Multi-Agent 编排系统
-
-```python
-# 核心编排逻辑
-class AnalysisOrchestrator:
-    async def analyze_repo(self, repo_url: str) -> dict:
-        # Stage 1: Overview (先看门道)
-        overview = await self.overview_agent.run(context)
-        context["architectureSummary"] = overview["architectureSummary"]
-        
-        # Stage 2 & 3: Parallel execution (跑通主线 + 拆它绝活)
-        mainflow, showcase = await asyncio.gather(
-            self.mainflow_agent.run(context),
-            self.showcase_agent.run(context)
-        )
-        
-        # Stage 4: Takeaway (抄走一招)
-        context["flowNodes"] = mainflow["flowNodes"]
-        context["highlights"] = showcase["highlights"]
-        takeaway = await self.takeaway_agent.run(context)
-        
-        return {
-            "overview": overview,
-            "mainflow": mainflow,
-            "showcase": showcase,
-            "takeaway": takeaway,
-            "_traces": self._collect_traces()  # 完整执行轨迹
-        }
+```text
+切代码块 -> 向量化 -> 相似度召回 -> 生成回答
 ```
 
-### 2. 工具执行透明化
+这能回答局部问题，但很难帮你建立全局理解。
 
-每个工具调用都被追踪：
+源码不是普通文本。源码有入口、模块、依赖、调用链、测试、抽象边界。
 
-```python
-# 自动统计
-tool_stats_collector.record_call(
-    tool_name="architecture_detector",
-    duration_ms=245.7,
-    success=True,
-    agent_name="overview"
-)
+CodeGraph 更关注这些结构：
 
-# 查询 API
-GET /api/v1/agent/tools/stats
-→ {
-    "top_tools": [
-        {"tool_name": "fetch_readme", "call_count": 847, "avg_duration_ms": 120.5},
-        {"tool_name": "parse_tree", "call_count": 682, "avg_duration_ms": 89.2}
-    ],
-    "dependency_graph": {
-        "architecture_detector": ["fetch_readme", "parse_tree"],
-        "call_graph_tracer": ["find_entry_points", "trace_calls"]
-    }
-}
+- **图增强检索**：不只看语义相似，还看代码实体之间的关系。
+- **阶段化 Agent**：总览、主线、亮点、迁移建议分别处理。
+- **学习优先**：输出目标不是炫技，而是让人能继续往下读。
+- **可视化路线**：把仓库变成一张地图，而不是一堵文件墙。
+
+## 架构概览
+
+```mermaid
+flowchart LR
+  A["GitHub 仓库"] --> B["代码读取与解析"]
+  B --> C["文件/模块/符号元数据"]
+  B --> D["代码关系图谱"]
+  C --> E["混合检索"]
+  D --> E
+  E --> F["阶段化 Agent"]
+  F --> G["先看门道"]
+  F --> H["跑通主线"]
+  F --> I["拆它绝活"]
+  F --> J["抄走一招"]
+  G --> K["可视化学习地图"]
+  H --> K
+  I --> K
+  J --> K
 ```
 
-### 3. Graph-Enhanced RAG
+## 技术栈
 
-不只向量检索，结合图遍历理解代码结构：
-
-- **Neo4j 知识图谱**：函数调用链、依赖关系、概念图
-- **混合检索**：图遍历 + 向量相似度 + 关键词匹配
-- **结构化召回**：优先召回"被当前函数调用"的代码，而非"语义相似"的无关代码
-
----
+| 层 | 技术 |
+| --- | --- |
+| 前端 | React、TypeScript、Vite、Mantine、像素风 UI |
+| 后端 | FastAPI、Python 3.11 |
+| 检索 | 向量检索、关键词检索、混合召回 |
+| 图谱 | 面向代码关系的图结构建模 |
+| Agent | 四阶段分析 Agent、任务编排、结构化输出 |
+| 部署 | Docker Compose、本地后端、Vercel 前端 |
 
 ## 快速开始
 
@@ -229,92 +157,91 @@ GET /api/v1/agent/tools/stats
 
 - Python 3.11+
 - Node.js 18+
-- Docker & Docker Compose
-- Claude API Key（或其他 OpenAI 兼容 API）
+- Docker 和 Docker Compose
+- OpenAI 兼容模型 API Key
 
-### 1. 克隆项目
+### 克隆项目
 
 ```bash
 git clone https://github.com/liu66-qing/CodeGraph.git
 cd CodeGraph
 ```
 
-### 2. 配置环境
+### 配置环境变量
 
 ```bash
 cp .env.example .env
-# 编辑 .env，填入 API Key
 ```
 
-### 3. 启动服务
+编辑 `.env`，填入模型、数据库、缓存等配置。
+
+### 启动基础服务
 
 ```bash
-# 启动基础设施（Neo4j + Redis）
 docker-compose up -d
+```
 
-# 启动后端
+### 启动后端
+
+```bash
 pip install -e ".[dev]"
-uvicorn codegraph.main:app --reload --port 8000
+uvicorn evograph.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-# 启动前端
+### 启动前端
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-访问 `http://localhost:5173`，输入 GitHub 仓库地址开始探索。
-
----
-
-## 项目结构
-
-```
-CodeGraph/
-├── frontend/              # React + Vite 前端
-│   ├── src/pages/         # 6 个页面（Home + Map + 4 Stages）
-│   └── src/components/    # Pixel UI 组件
-├── src/codegraph/         # FastAPI 后端
-│   ├── agent/             # Multi-Agent 系统
-│   │   ├── analysis_orchestrator.py   # 4-stage 编排器
-│   │   ├── stages/        # 4 个 Stage Agent
-│   │   ├── tools/         # 15+ 专用工具
-│   │   └── tools/stats.py # 工具执行统计
-│   ├── api/v1/            # REST API
-│   ├── graph/             # Neo4j 图谱操作
-│   ├── retrieval/         # Graph-Enhanced RAG
-│   └── ingestion/         # 代码解析与入库
-├── docs/design/           # PRD + 原型图
-└── tests/                 # 单元测试 + 集成测试
-```
-
----
+访问 `http://localhost:5173`。
 
 ## 适合谁？
 
-- **学习者** - 想快速读懂大型开源项目（React/Vue/LangChain...）
-- **团队负责人** - 想为团队沉淀代码学习路径
-- **开发者** - 想研究 Multi-Agent + Graph RAG 在代码理解场景的落地
-- **研究者** - 想探索 Agent 编排、工具调用、知识图谱的工程实践
+- 想读懂优秀开源项目，但经常卡在文件树里的开发者
+- 想为团队新人做项目 onboarding 的技术负责人
+- 想做 Code Agent / RAG Agent / 图谱检索项目的同学
+- 想给开源项目提 PR，但不知道从哪里理解代码的人
+- 想研究 Agentic RAG 在代码理解场景中怎么落地的人
 
----
+## 路线图
 
-## Roadmap
+- [ ] 支持更多 TypeScript / Python 项目结构
+- [ ] 增强调用链和模块依赖分析
+- [ ] 接入 GitHub issue / PR 背景理解
+- [ ] 导出 Markdown / PDF 学习报告
+- [ ] 部署完整后端，提供端到端在线体验
+- [ ] 增加更多真实开源项目分析样例
 
-- [ ] 支持更多语言（目前专注 TypeScript/JavaScript/Python）
-- [ ] Agent 推理过程可视化（实时 Trace 渲染）
-- [ ] 工具依赖图交互式探索
-- [ ] 学习路径导出（PDF/Markdown）
-- [ ] 团队协作：多人共同学习一个仓库
+## 如何参与
 
----
+现在项目还在早期，最需要真实反馈。
+
+你可以这样参与：
+
+- 给仓库点 Star，让更多人看到这个项目。
+- 提 Issue：告诉我你最想分析哪个仓库。
+- 提建议：你希望“源码学习地图”长什么样。
+- 提 PR：增加新的语言解析、新的分析器、新的页面或文档。
+
+适合作为 Issue 的想法：
+
+- 支持 Next.js App Router 项目分析
+- 支持 FastAPI 项目的主流程提取
+- 增加 LangChain 仓库分析样例
+- 导出学习路径为 Markdown
+- 增加 GitHub issue 背景分析
 
 ## License
 
-Apache-2.0 License - 详见 [LICENSE](./LICENSE)
+Apache-2.0，详见 [LICENSE](./LICENSE)。
 
 ---
 
 <div align="center">
-  <p><strong>CodeGraph: 让每个老乡看懂好仓库</strong></p>
-  <p>如果这个项目帮到了你，点个 ⭐ Star 支持一下！</p>
+  <strong>如果 CodeGraph 让你觉得“读源码可以不那么痛苦”，欢迎点一个 Star。</strong>
+  <br>
+  Star、Issue 和 PR 都会直接影响这个项目下一步做什么。
 </div>
