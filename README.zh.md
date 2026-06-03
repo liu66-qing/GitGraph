@@ -74,29 +74,39 @@ CodeGraph 是一个面向源码学习的 AI 代码理解平台。
 
 ### 真实学习路径页
 
-![CodeGraph 学习路径页](./docs/assets/learning-path-page.png)
+![CodeGraph 学习路径页](./docs/design/zh/learning-map.png)
 
 ### 首页与四阶段页面
 
 <table>
   <tr>
     <td width="50%">
-      <img src="./docs/design/en/home.png" alt="首页">
+      <img src="./docs/design/zh/home.png" alt="首页">
       <p align="center"><strong>首页：输入仓库，开始探索</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/en/learning-map.png" alt="学习地图">
+      <img src="./docs/design/zh/learning-map.png" alt="学习地图">
       <p align="center"><strong>学习地图：四阶段路线</strong></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="./docs/design/en/stage1-overview.png" alt="先看门道">
+      <img src="./docs/design/zh/stage1-overview.png" alt="先看门道">
       <p align="center"><strong>先看门道</strong></p>
     </td>
     <td width="50%">
-      <img src="./docs/design/en/stage2-mainflow.png" alt="跑通主线">
+      <img src="./docs/design/zh/stage2-mainflow.png" alt="跑通主线">
       <p align="center"><strong>跑通主线</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="./docs/design/zh/stage3-showcase.png" alt="拆它绝活">
+      <p align="center"><strong>拆它绝活</strong></p>
+    </td>
+    <td width="50%">
+      <img src="./docs/design/zh/stage4-takeaway.png" alt="抄走一招">
+      <p align="center"><strong>抄走一招</strong></p>
     </td>
   </tr>
 </table>
