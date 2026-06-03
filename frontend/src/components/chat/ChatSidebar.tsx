@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageSquareCode, Send, X, Loader2, Code2 } from 'lucide-react'
 import { api, type AskCodebaseResponse } from '../../services/api'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -10,6 +11,7 @@ interface Message {
 }
 
 export default function ChatSidebar({ repoId }: { repoId: string }) {
+  const { t } = useLanguage()
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -32,7 +34,7 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
         ...m,
         {
           role: 'assistant',
-          content: res.answer || '无法回答',
+          content: res.answer || t('chatSidebar.noAnswer'),
           sources: res.sources?.map((s) => ({
             symbol: s.symbol,
             file_path: s.file_path,
@@ -42,7 +44,7 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
         },
       ])
     } catch {
-      setMessages((m) => [...m, { role: 'assistant', content: '请求失败,请检查后端是否运行。' }])
+      setMessages((m) => [...m, { role: 'assistant', content: t('chatSidebar.requestFailed') }])
     } finally {
       setLoading(false)
     }
@@ -53,7 +55,7 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-colors"
-        title="问代码库"
+        title={t('chatSidebar.title')}
       >
         <MessageSquareCode className="w-5 h-5" />
       </button>
@@ -66,7 +68,7 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
       <div className="flex items-center justify-between px-4 py-3 border-b bg-indigo-50">
         <div className="flex items-center gap-2">
           <MessageSquareCode className="w-4 h-4 text-indigo-600" />
-          <span className="text-sm font-medium text-gray-700">问代码库</span>
+          <span className="text-sm font-medium text-gray-700">{t('chatSidebar.title')}</span>
           {repoId && <span className="text-[10px] text-gray-400 truncate max-w-[140px]">{repoId.split(':').pop()}</span>}
         </div>
         <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -78,8 +80,8 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
       <div className="flex-1 overflow-auto px-4 py-3 space-y-3">
         {messages.length === 0 && (
           <div className="text-center text-xs text-gray-400 mt-8">
-            <p>基于源码的智能问答</p>
-            <p className="mt-1">试试:"agent 怎么协作" / "数据怎么流动"</p>
+            <p>{t('chatSidebar.emptyTitle')}</p>
+            <p className="mt-1">{t('chatSidebar.emptyHint')}</p>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -123,7 +125,7 @@ export default function ChatSidebar({ repoId }: { repoId: string }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && send()}
-            placeholder="输入问题…"
+            placeholder={t('chatSidebar.inputPlaceholder')}
             disabled={loading}
             className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50"
           />

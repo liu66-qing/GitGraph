@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,19 +20,21 @@ import {
   Target,
   Wrench,
 } from 'lucide-react'
-import { stageAssets, stageBackgrounds, overviewAssets } from '../assets/pixel/stage-library'
+import { stageAssets, stageBackgrounds, overviewAssets, type StageAssetKey } from '../assets/pixel/stage-library'
 import { PixelAsset } from '../components/common/PixelStageKit'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface FlowNode {
   id: number
-  title: string
-  note: string
-  icon: ReactNode
+  titleKey: string
+  noteKey: string
+  asset: StageAssetKey
+  iconAltKey: string
   detail: {
-    explanation: string
-    whatToLook: string
-    whyFirst: string
-    outcome: string
+    explanationKey: string
+    whatToLookKey: string
+    whyFirstKey: string
+    outcomeKey: string
   }
 }
 
@@ -44,80 +46,80 @@ interface EvidenceLink {
 const flowNodes: FlowNode[] = [
   {
     id: 1,
-    title: '收到请求',
-    note: '用户输入进入系统',
-    icon: <PixelAsset asset="routeArrowBlue" alt="请求" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node1.title',
+    noteKey: 'mainflow.node1.note',
+    asset: 'routeArrowBlue',
+    iconAltKey: 'mainflow.node1.iconAlt',
     detail: {
-      explanation:
-        '用户通过 REST API 或 SDK 发送一条消息给 Agent。服务端接收请求，找到对应的 Agent 实例，准备启动 Agent Loop。',
-      whatToLook: 'REST API 路由、请求体结构、Agent ID 路由',
-      whyFirst: '这是整个流程的触发点，理解入口才能追踪后续',
-      outcome: '一个待处理的用户消息进入 Agent 的处理队列',
+      explanationKey: 'mainflow.node1.explanation',
+      whatToLookKey: 'mainflow.node1.whatToLook',
+      whyFirstKey: 'mainflow.node1.whyFirst',
+      outcomeKey: 'mainflow.node1.outcome',
     },
   },
   {
     id: 2,
-    title: '读取记忆',
-    note: '读取会话状态与长期记忆',
-    icon: <PixelAsset asset="crystalMemoryPurple" alt="记忆" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node2.title',
+    noteKey: 'mainflow.node2.note',
+    asset: 'crystalMemoryPurple',
+    iconAltKey: 'mainflow.node2.iconAlt',
     detail: {
-      explanation:
-        '在做任何决定之前，Agent 会先读取当前会话上下文、角色设定、记忆块以及有用的历史状态，确保后续动作建立在可靠信息之上。',
-      whatToLook: '会话上下文、角色 / persona、记忆块、状态变量',
-      whyFirst: '先掌握已有信息，避免重复、冲突或无谓的动作',
-      outcome: '当前可用的上下文集合，作为后续决策依据',
+      explanationKey: 'mainflow.node2.explanation',
+      whatToLookKey: 'mainflow.node2.whatToLook',
+      whyFirstKey: 'mainflow.node2.whyFirst',
+      outcomeKey: 'mainflow.node2.outcome',
     },
   },
   {
     id: 3,
-    title: '规划动作',
-    note: '判断是否思考、检索或调用工具',
-    icon: <PixelAsset asset="crystalAgentBlue" alt="规划" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node3.title',
+    noteKey: 'mainflow.node3.note',
+    asset: 'crystalAgentBlue',
+    iconAltKey: 'mainflow.node3.iconAlt',
     detail: {
-      explanation:
-        'LLM 根据当前上下文进行推理，决定下一步是直接回复、调用工具、还是检索更多信息。',
-      whatToLook: 'LLM 调用逻辑、prompt 组装、tool_choice 参数',
-      whyFirst: '这是 Agent 的"大脑"，决定了整个行为路径',
-      outcome: '一个决策：调用哪个工具 / 直接回复 / 继续思考',
+      explanationKey: 'mainflow.node3.explanation',
+      whatToLookKey: 'mainflow.node3.whatToLook',
+      whyFirstKey: 'mainflow.node3.whyFirst',
+      outcomeKey: 'mainflow.node3.outcome',
     },
   },
   {
     id: 4,
-    title: '执行工具',
-    note: '调工具并拿回结果',
-    icon: <PixelAsset asset="badgeClipboard" alt="工具" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node4.title',
+    noteKey: 'mainflow.node4.note',
+    asset: 'badgeClipboard',
+    iconAltKey: 'mainflow.node4.iconAlt',
     detail: {
-      explanation:
-        '根据 LLM 的决策，执行对应的工具调用（记忆操作、外部 API、代码执行等），获取执行结果。',
-      whatToLook: '工具注册表、工具执行器、server-side vs client-side',
-      whyFirst: '工具是 Agent 与外部世界交互的唯一方式',
-      outcome: '工具执行结果，准备写回上下文',
+      explanationKey: 'mainflow.node4.explanation',
+      whatToLookKey: 'mainflow.node4.whatToLook',
+      whyFirstKey: 'mainflow.node4.whyFirst',
+      outcomeKey: 'mainflow.node4.outcome',
     },
   },
   {
     id: 5,
-    title: '更新状态',
-    note: '把新信息写回记忆与状态',
-    icon: <PixelAsset asset="crystalLoopGreen" alt="状态" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node5.title',
+    noteKey: 'mainflow.node5.note',
+    asset: 'crystalLoopGreen',
+    iconAltKey: 'mainflow.node5.iconAlt',
     detail: {
-      explanation:
-        '将工具执行结果、新学到的信息写入记忆块和数据库，更新 Agent 的持久化状态。',
-      whatToLook: '记忆写入逻辑、状态持久化、数据库操作',
-      whyFirst: '这是 Agent "学习"的关键步骤',
-      outcome: 'Agent 状态已更新，新信息已持久化',
+      explanationKey: 'mainflow.node5.explanation',
+      whatToLookKey: 'mainflow.node5.whatToLook',
+      whyFirstKey: 'mainflow.node5.whyFirst',
+      outcomeKey: 'mainflow.node5.outcome',
     },
   },
   {
     id: 6,
-    title: '生成回复',
-    note: '组织最终答案返回用户',
-    icon: <PixelAsset asset="badgeMap" alt="回复" style={{ width: 36, height: 36 }} />,
+    titleKey: 'mainflow.node6.title',
+    noteKey: 'mainflow.node6.note',
+    asset: 'badgeMap',
+    iconAltKey: 'mainflow.node6.iconAlt',
     detail: {
-      explanation:
-        'Agent Loop 判断任务完成，将最终结果组织为用户可读的回复，通过 API 返回。',
-      whatToLook: '回复组装逻辑、流式输出、响应格式',
-      whyFirst: '这是用户唯一能看到的输出',
-      outcome: '用户收到回复，一次完整的 Agent 交互结束',
+      explanationKey: 'mainflow.node6.explanation',
+      whatToLookKey: 'mainflow.node6.whatToLook',
+      whyFirstKey: 'mainflow.node6.whyFirst',
+      outcomeKey: 'mainflow.node6.outcome',
     },
   },
 ]
@@ -140,6 +142,7 @@ const evidenceLinks: EvidenceLink[] = [
 const PROGRESS = 58
 
 export default function MainFlow() {
+  const { t } = useLanguage()
   const [selectedNode, setSelectedNode] = useState(1)
   const current = flowNodes[selectedNode]
 
@@ -151,7 +154,7 @@ export default function MainFlow() {
       >
         <button type="button" className="mf-back-btn">
           <ArrowLeft size={18} />
-          返回学习地图
+          {t('mainflow.back')}
         </button>
 
         <div className="mf-progress-card">
@@ -161,7 +164,7 @@ export default function MainFlow() {
             className="mf-progress-avatar"
           />
           <div className="mf-progress-body">
-            <strong>当前进度</strong>
+            <strong>{t('mainflow.progress.current')}</strong>
             <div className="mf-progress-track">
               <i style={{ width: `${PROGRESS}%` }} />
             </div>
@@ -169,22 +172,22 @@ export default function MainFlow() {
           <b>{PROGRESS}%</b>
         </div>
 
-        <h1 className="mf-hero-title">Stage 2 · 跑通主线</h1>
+        <h1 className="mf-hero-title">{t('mainflow.hero.title')}</h1>
         <p className="mf-hero-subtitle">
-          沿着主请求流程走一遍，先在脑中把这个仓库真正跑起来。
+          {t('mainflow.hero.subtitle')}
         </p>
 
         <div className="mf-sign mf-sign-main">
-          <img src={stageAssets.woodArrowSign} alt="主流程" />
+          <img src={stageAssets.woodArrowSign} alt={t('mainflow.sign.main')} />
           <span>
-            主流程
+            {t('mainflow.sign.main')}
             <ArrowRight size={14} />
           </span>
         </div>
 
         <img
           src={stageAssets.mentorRunner}
-          alt="像素跑步小人"
+          alt={t('mainflow.hero.characterAlt')}
           className="mf-hero-character"
         />
 
@@ -214,9 +217,9 @@ export default function MainFlow() {
         </svg>
 
         <div className="mf-sign mf-sign-next">
-          <img src={overviewAssets.sign} alt="继续前进" />
+          <img src={overviewAssets.sign} alt={t('mainflow.sign.next')} />
           <span>
-            继续前进
+            {t('mainflow.sign.next')}
             <ArrowRight size={14} />
           </span>
         </div>
@@ -227,7 +230,7 @@ export default function MainFlow() {
           <section className="mf-flow-card">
             <header className="mf-card-header">
               <LinkIcon size={20} color="#2c5070" />
-              <h2>主请求执行链路</h2>
+              <h2>{t('mainflow.flowChain.title')}</h2>
             </header>
 
             <div className="mf-flow-grid">
@@ -243,10 +246,10 @@ export default function MainFlow() {
                     >
                       <span className="mf-node-index">{node.id}</span>
                       <div className={`mf-node-icon-box ${active ? 'is-active' : ''}`}>
-                        {node.icon}
+                        <PixelAsset asset={node.asset} alt={t(node.iconAltKey)} style={{ width: 36, height: 36 }} />
                       </div>
-                      <strong>{node.title}</strong>
-                      <small>{node.note}</small>
+                      <strong>{t(node.titleKey)}</strong>
+                      <small>{t(node.noteKey)}</small>
                     </button>
                     {!isLast && (
                       <span className="mf-node-arrow" aria-hidden>
@@ -262,22 +265,22 @@ export default function MainFlow() {
           <section className="mf-explain-card">
             <header className="mf-card-header mf-explain-header">
               <BookOpen size={20} color="#9c6a1a" />
-              <h2>节点说明：{current.title}</h2>
+              <h2>{t('mainflow.explain.titlePrefix')}{t(current.titleKey)}</h2>
             </header>
 
-            <p className="mf-explain-lead">{current.detail.explanation}</p>
+            <p className="mf-explain-lead">{t(current.detail.explanationKey)}</p>
 
             <div className="mf-explain-section">
-              <h4><Eye size={15} /> 看什么</h4>
-              <p>{current.detail.whatToLook}</p>
+              <h4><Eye size={15} /> {t('mainflow.explain.whatToLook')}</h4>
+              <p>{t(current.detail.whatToLookKey)}</p>
             </div>
             <div className="mf-explain-section">
-              <h4><Lightbulb size={15} /> 为什么先看</h4>
-              <p>{current.detail.whyFirst}</p>
+              <h4><Lightbulb size={15} /> {t('mainflow.explain.whyFirst')}</h4>
+              <p>{t(current.detail.whyFirstKey)}</p>
             </div>
             <div className="mf-explain-section">
-              <h4><Gift size={15} /> 跑完后得到什么</h4>
-              <p>{current.detail.outcome}</p>
+              <h4><Gift size={15} /> {t('mainflow.explain.outcome')}</h4>
+              <p>{t(current.detail.outcomeKey)}</p>
             </div>
           </section>
         </div>
@@ -286,7 +289,7 @@ export default function MainFlow() {
           <section className="mf-card mf-evidence-card">
             <header className="mf-card-header">
               <LinkIcon size={18} color="#3a6b2c" />
-              <h2>最小证据链接</h2>
+              <h2>{t('mainflow.evidence.title')}</h2>
             </header>
             <ul className="mf-evidence-list">
               {evidenceLinks.map((link) => (
@@ -304,23 +307,23 @@ export default function MainFlow() {
           <section className="mf-card mf-reward-card">
             <header className="mf-card-header">
               <Star size={18} color="#7a8a2c" />
-              <h2>这一页你会获得</h2>
+              <h2>{t('mainflow.reward.title')}</h2>
             </header>
             <div className="mf-reward-grid">
               <div className="mf-reward-item">
                 <img src={stageAssets.badgeMap} alt="" />
-                <strong>看懂主流程</strong>
-                <small>建立整体心智地图</small>
+                <strong>{t('mainflow.reward1.title')}</strong>
+                <small>{t('mainflow.reward1.text')}</small>
               </div>
               <div className="mf-reward-item">
                 <Target size={28} color="#c2410c" strokeWidth={2.4} />
-                <strong>知道关键节点</strong>
-                <small>理解每步的职责</small>
+                <strong>{t('mainflow.reward2.title')}</strong>
+                <small>{t('mainflow.reward2.text')}</small>
               </div>
               <div className="mf-reward-item">
                 <img src={stageAssets.badgeClipboard} alt="" />
-                <strong>能自己复述执行链路</strong>
-                <small>把流程讲给别人听</small>
+                <strong>{t('mainflow.reward3.title')}</strong>
+                <small>{t('mainflow.reward3.text')}</small>
               </div>
             </div>
           </section>
@@ -328,20 +331,20 @@ export default function MainFlow() {
           <section className="mf-card mf-task-card">
             <header className="mf-card-header">
               <ClipboardList size={18} color="#a16207" />
-              <h2>本关任务（3/3）</h2>
+              <h2>{t('mainflow.task.title')}</h2>
             </header>
             <ul className="mf-task-list">
               <li>
                 <CheckCircle2 size={16} color="#2b8a3e" />
-                沿着主流程走一遍，理解每个节点做什么
+                {t('mainflow.task1')}
               </li>
               <li>
                 <CheckCircle2 size={16} color="#2b8a3e" />
-                在代码中找到对应片段并标注位置
+                {t('mainflow.task2')}
               </li>
               <li>
                 <CheckCircle2 size={16} color="#2b8a3e" />
-                尝试用自己的话复述整条执行链路
+                {t('mainflow.task3')}
               </li>
             </ul>
             <img
@@ -354,12 +357,12 @@ export default function MainFlow() {
           <section className="mf-card mf-next-card">
             <header className="mf-card-header">
               <Flag size={18} color="#1d4ed8" />
-              <h2>下一站：拆它绝活</h2>
+              <h2>{t('mainflow.next.title')}</h2>
               <em className="mf-next-badge">3</em>
             </header>
             <p className="mf-next-body">
-              深入核心模块与设计细节，
-              <br />看懂它的拿手好戏。
+              {t('mainflow.next.body1')}
+              <br />{t('mainflow.next.body2')}
             </p>
             <img
               src={stageAssets.mineEntrance}
@@ -367,7 +370,7 @@ export default function MainFlow() {
               className="mf-mine-decoration"
             />
             <button type="button" className="mf-next-button">
-              进入下一步
+              {t('mainflow.next.button')}
               <ArrowRight size={18} />
             </button>
           </section>

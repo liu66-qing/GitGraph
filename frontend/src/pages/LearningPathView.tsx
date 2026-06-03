@@ -15,13 +15,14 @@ import {
 import journeyScene from '../assets/pixel/backgrounds/home-journey-scene.png'
 import characterSheet from '../assets/pixel/characters/kenney-characters.png'
 import { stageAssets, overviewAssets } from '../assets/pixel/stage-library'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const mapNodes = [
   {
     id: 1,
-    title: '先看门道',
-    desc: 'Stage 1 · 先看门道\n绕明白，先踏门槛',
-    label: '先看 1',
+    titleKey: 'learningPath.node1.title',
+    descKey: 'learningPath.node1.desc',
+    labelKey: 'learningPath.node1.label',
     status: 'done',
     left: 8,
     top: 62,
@@ -30,9 +31,9 @@ const mapNodes = [
   },
   {
     id: 2,
-    title: '跑通主线',
-    desc: '运行项目，理解主线\n执行流程与关键逻辑',
-    label: '跑通主线',
+    titleKey: 'learningPath.node2.title',
+    descKey: 'learningPath.node2.desc',
+    labelKey: 'learningPath.node2.label',
     status: 'active',
     left: 34,
     top: 56,
@@ -41,9 +42,9 @@ const mapNodes = [
   },
   {
     id: 3,
-    title: '拆它绝活',
-    desc: '分析核心模块，拆解\n关键实现技巧与设计亮点',
-    label: '拆它绝活',
+    titleKey: 'learningPath.node3.title',
+    descKey: 'learningPath.node3.desc',
+    labelKey: 'learningPath.node3.label',
     status: 'pending',
     left: 58,
     top: 50,
@@ -52,9 +53,9 @@ const mapNodes = [
   },
   {
     id: 4,
-    title: '抄走一招',
-    desc: '提炼可复用的思路与技巧，\n拿去解决自己的问题',
-    label: '抄走一招',
+    titleKey: 'learningPath.node4.title',
+    descKey: 'learningPath.node4.desc',
+    labelKey: 'learningPath.node4.label',
     status: 'pending',
     left: 82,
     top: 56,
@@ -63,28 +64,31 @@ const mapNodes = [
   },
 ]
 
+// `state` keeps the original Chinese value because CSS selectors (.lm-route-已完成
+// etc.) key off it; `stateKey` drives the translated display text.
 const routeSteps = [
-  { id: 1, title: '先看门道', time: '20分钟', state: '已完成' },
-  { id: 2, title: '跑通主线', time: '40分钟', state: '学习中' },
-  { id: 3, title: '拆它绝活', time: '60分钟', state: '未开始' },
-  { id: 4, title: '抄走一招', time: '30分钟', state: '未开始' },
+  { id: 1, titleKey: 'learningPath.route1.title', timeKey: 'learningPath.route1.time', state: '已完成', stateKey: 'learningPath.state.done' },
+  { id: 2, titleKey: 'learningPath.route2.title', timeKey: 'learningPath.route2.time', state: '学习中', stateKey: 'learningPath.state.active' },
+  { id: 3, titleKey: 'learningPath.route3.title', timeKey: 'learningPath.route3.time', state: '未开始', stateKey: 'learningPath.state.pending' },
+  { id: 4, titleKey: 'learningPath.route4.title', timeKey: 'learningPath.route4.time', state: '未开始', stateKey: 'learningPath.state.pending' },
 ]
 
 const recentItems = [
-  { title: 'Stage 1 · 先看门道', meta: '完成于 2024-05-24 14:30', state: '已完成' },
-  { title: 'Stage 2 · 跑通主线', meta: '进行中 ...', state: '学习中' },
-  { title: '快速开始：项目结构与目录概览', meta: '学习于 2024-05-24 10:15', state: '已完成' },
+  { titleKey: 'learningPath.recent1.title', metaKey: 'learningPath.recent1.meta', stateKey: 'learningPath.state.done' },
+  { titleKey: 'learningPath.recent2.title', metaKey: 'learningPath.recent2.meta', stateKey: 'learningPath.state.active' },
+  { titleKey: 'learningPath.recent3.title', metaKey: 'learningPath.recent3.meta', stateKey: 'learningPath.state.done' },
 ]
 
 const badges = [
-  { title: '初探者', desc: '完成第一个阶段', icon: 'portrait', unlocked: true },
-  { title: '探索者', desc: '完成两个阶段', icon: 'medal', unlocked: true },
-  { title: '分析师', desc: '完成拆解阶段', icon: 'sword', unlocked: true },
-  { title: '实战派', desc: '完成实战项目', icon: 'lock', unlocked: false },
+  { titleKey: 'learningPath.badge1.title', descKey: 'learningPath.badge1.desc', icon: 'portrait', unlocked: true },
+  { titleKey: 'learningPath.badge2.title', descKey: 'learningPath.badge2.desc', icon: 'medal', unlocked: true },
+  { titleKey: 'learningPath.badge3.title', descKey: 'learningPath.badge3.desc', icon: 'sword', unlocked: true },
+  { titleKey: 'learningPath.badge4.title', descKey: 'learningPath.badge4.desc', icon: 'lock', unlocked: false },
 ]
 
 export default function LearningPathView() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   return (
     <main className="lm-page">
@@ -92,22 +96,22 @@ export default function LearningPathView() {
         <div className="lm-title-row">
           <img src={stageAssets.badgeMap} alt="" className="lm-title-icon" />
           <div>
-            <h1>学习地图</h1>
-            <p>探索学习路径，循序渐进掌握项目精髓</p>
+            <h1>{t('learningPath.title')}</h1>
+            <p>{t('learningPath.subtitle')}</p>
           </div>
         </div>
         <div className="lm-header-actions">
           <div className="lm-top-progress">
             <Star size={26} fill="#ffd866" color="#9a6a1e" />
             <div>
-              <span>总体进度</span>
+              <span>{t('learningPath.overallProgress')}</span>
               <i><b /></i>
             </div>
             <strong>42%</strong>
           </div>
           <button type="button" className="lm-guide-btn">
             <BookOpen size={20} />
-            学习指南
+            {t('learningPath.guide')}
           </button>
         </div>
       </header>
@@ -118,8 +122,8 @@ export default function LearningPathView() {
         </svg>
 
         <div className="lm-location-pin">
-          <span>您的位置</span>
-          <strong>Stage 1 · 先看门道</strong>
+          <span>{t('learningPath.yourLocation')}</span>
+          <strong>{t('learningPath.locationStage')}</strong>
         </div>
 
         {mapNodes.map((node) => (
@@ -133,8 +137,8 @@ export default function LearningPathView() {
             <img src={node.asset} alt="" />
             <em>{node.id}</em>
             <div>
-              <strong>{node.label}</strong>
-              <p>{node.desc}</p>
+              <strong>{t(node.labelKey)}</strong>
+              <p>{t(node.descKey)}</p>
             </div>
           </button>
         ))}
@@ -142,49 +146,49 @@ export default function LearningPathView() {
 
       <section className="lm-grid">
         <article className="lm-panel lm-progress-panel">
-          <PanelHeader icon={<MapIcon size={22} />} title="学习进度总览" action="查看详情" />
+          <PanelHeader icon={<MapIcon size={22} />} title={t('learningPath.progressTitle')} action={t('learningPath.viewDetails')} />
           <div className="lm-progress-main">
             <img src={stageAssets.badgeMap} alt="" />
             <div>
-              <span>总体进度</span>
+              <span>{t('learningPath.overallProgress')}</span>
               <strong>42%</strong>
             </div>
             <i><b /></i>
-            <small>已完成 2 / 4 个阶段</small>
+            <small>{t('learningPath.stagesDone')}</small>
           </div>
           <div className="lm-stats">
-            <StatCard icon="🧊" label="已学习知识点" value="28 / 68" />
-            <StatCard icon="🕒" label="累计学习时长" value="12h 36m" />
-            <StatCard icon="🧳" label="连续学习天数" value="5 天" />
+            <StatCard icon="🧊" label={t('learningPath.stat1.label')} value="28 / 68" />
+            <StatCard icon="🕒" label={t('learningPath.stat2.label')} value="12h 36m" />
+            <StatCard icon="🧳" label={t('learningPath.stat3.label')} value={t('learningPath.stat3.value')} />
           </div>
           <div className="lm-recent">
-            <h3>最近学习</h3>
+            <h3>{t('learningPath.recentTitle')}</h3>
             {recentItems.map((item) => (
-              <div key={item.title} className="lm-recent-item">
+              <div key={item.titleKey} className="lm-recent-item">
                 <span className="lm-mini-avatar" />
-                <div><strong>{item.title}</strong><small>{item.meta}</small></div>
-                <em>{item.state}</em>
+                <div><strong>{t(item.titleKey)}</strong><small>{t(item.metaKey)}</small></div>
+                <em>{t(item.stateKey)}</em>
               </div>
             ))}
           </div>
         </article>
 
         <article className="lm-panel lm-route-panel">
-          <PanelHeader icon={<Sparkles size={22} />} title="推荐学习路径" action="切换路径" />
+          <PanelHeader icon={<Sparkles size={22} />} title={t('learningPath.routeTitle')} action={t('learningPath.switchPath')} />
           <div className="lm-tabs">
-            <button type="button" className="active">默认路径</button>
-            <button type="button">速通路径</button>
-            <button type="button">深度路径</button>
+            <button type="button" className="active">{t('learningPath.tab.default')}</button>
+            <button type="button">{t('learningPath.tab.fast')}</button>
+            <button type="button">{t('learningPath.tab.deep')}</button>
           </div>
           <ol className="lm-route-list">
             {routeSteps.map((step) => (
               <li key={step.id} className={`lm-route-${step.state}`}>
                 <span>{step.id}</span>
                 <div>
-                  <strong>{step.title}</strong>
-                  <small>建议时长：{step.time}</small>
+                  <strong>{t(step.titleKey)}</strong>
+                  <small>{t('learningPath.suggestedTime').replace('{time}', t(step.timeKey))}</small>
                 </div>
-                <em>{step.state}</em>
+                <em>{t(step.stateKey)}</em>
               </li>
             ))}
           </ol>
@@ -192,13 +196,13 @@ export default function LearningPathView() {
 
         <div className="lm-right-stack">
           <article className="lm-panel lm-badges-panel">
-            <PanelHeader icon={<Medal size={22} />} title="成就徽章" action="查看全部" />
+            <PanelHeader icon={<Medal size={22} />} title={t('learningPath.badgesTitle')} action={t('learningPath.viewAll')} />
             <div className="lm-badges">
               {badges.map((badge) => (
-                <div key={badge.title} className={badge.unlocked ? '' : 'locked'}>
+                <div key={badge.titleKey} className={badge.unlocked ? '' : 'locked'}>
                   <BadgeIcon kind={badge.icon} />
-                  <strong>{badge.title}</strong>
-                  <small>{badge.desc}</small>
+                  <strong>{t(badge.titleKey)}</strong>
+                  <small>{t(badge.descKey)}</small>
                 </div>
               ))}
             </div>
@@ -207,11 +211,11 @@ export default function LearningPathView() {
           <article className="lm-panel lm-tip-panel">
             <header>
               <Sparkles size={22} color="#d89a11" />
-              <h2>学习小贴士</h2>
+              <h2>{t('learningPath.tipTitle')}</h2>
             </header>
             <div className="lm-tip-box">
-              <p>建议每天坚持学习 30 分钟，循序渐进，效果更佳！</p>
-              <p>遇到困难时，可以查看帮助中心或加入社区讨论。</p>
+              <p>{t('learningPath.tip1')}</p>
+              <p>{t('learningPath.tip2')}</p>
               <img src={stageAssets.mentorTrophy} alt="" />
             </div>
           </article>

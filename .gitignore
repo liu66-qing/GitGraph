@@ -36,10 +36,19 @@ frontend/dist/
 *.db
 *.sqlite3
 
+# Caches / temp (browser profiles, cloned repos, prototypes)
+.cache/
+.chrome-temp/
+.chrome-temp2/
+.chrome-temp3/
+.chrome-temp4/
+
 # OS
 .DS_Store
 Thumbs.db
 docs/screenshots/
+docs/archive/
+docs/scripts/
 docs/evograph-demo-*/
 docs/lo-test/
 docs/archive/

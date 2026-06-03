@@ -10,6 +10,7 @@ import {
 } from '../services/api'
 import './Overview.css'
 import overviewBg from '../assets/pixel/backgrounds/overview-morning.png'
+import { useLanguage } from '../i18n/LanguageContext'
 import {
   overviewAssets,
   stageAssets,
@@ -31,6 +32,7 @@ interface ReadingStep {
 
 export default function Overview() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [searchParams] = useSearchParams()
   const [repos, setRepos] = useState<RepoSummary[]>([])
   const [repoId, setRepoId] = useState('')
@@ -68,9 +70,9 @@ export default function Overview() {
 
   const positioning = useMemo(() => {
     if (arch?.summary) return arch.summary
-    if (loading) return '正在生成一句话定位...'
-    return '这个仓库是一个帮助开发者快速构建与扩展开源智能体应用的框架。'
-  }, [arch, loading])
+    if (loading) return t('overview.positioningLoading')
+    return t('overview.positioningFallback')
+  }, [arch, loading, t])
 
   const coreProblem = useMemo(() => {
     if (arch?.patterns?.length) {
@@ -78,61 +80,65 @@ export default function Overview() {
       return `${p.name}: ${p.evidence}`
     }
     if (arch?.summary) return arch.summary
-    return '帮助团队在多模型、多 Agent 场景下快速搭建可扩展的智能体应用，避免重复造轮子。'
-  }, [arch])
+    return t('overview.problemFallback')
+  }, [arch, t])
 
   const mentalModel = useMemo((): MentalModelItem[] => {
     const layers = arch?.layers || []
-    const stack = quickstart?.stack?.join(' / ') || arch?.patterns?.[0]?.name || '模块化代码组织'
-    const layerNames = layers.slice(0, 3).map((l) => l.name).join(' -> ') || '数据 -> 逻辑 -> 接口'
+    const stack = quickstart?.stack?.join(' / ') || arch?.patterns?.[0]?.name || t('overview.mental.howFallback')
+    const layerNames = layers.slice(0, 3).map((l) => l.name).join(' -> ') || 'data -> logic -> interface'
     return [
       {
-        title: '它是什么',
-        description: arch?.summary?.split('。')[0] || `基于 ${stack} 的模块化框架。`,
+        title: t('overview.mental.whatTitle'),
+        description: arch?.summary?.split('。')[0] || t('overview.mental.whatFallback').replace('{stack}', stack),
         iconChar: '▣',
       },
       {
-        title: '为谁服务',
-        description: layers[0]?.description || '面向开发者、团队与企业，构建与扩展智能体能力。',
+        title: t('overview.mental.whoTitle'),
+        description: layers[0]?.description || t('overview.mental.whoFallback'),
         iconChar: '♟',
       },
       {
-        title: '怎么工作',
-        description: `通过 ${arch?.module_count ?? (layers.length || '多个')} 个核心模块协同：${layerNames}。`,
+        title: t('overview.mental.howTitle'),
+        description: t('overview.mental.howDesc')
+          .replace('{count}', String(arch?.module_count ?? (layers.length || t('overview.mental.howFallback'))))
+          .replace('{layers}', layerNames),
         iconChar: '⚙',
       },
     ]
-  }, [arch, quickstart])
+  }, [arch, quickstart, t])
 
   const readingOrder = useMemo((): ReadingStep[] => {
     const steps: ReadingStep[] = [
-      { step: 1, title: 'README', description: '了解项目定位与价值' },
+      { step: 1, title: t('overview.reading.step1Title'), description: t('overview.reading.step1Desc') },
     ]
     if (moduleMap?.cards?.length) {
       steps.push({
         step: 2,
-        title: '目录结构',
-        description: `认识整体模块，${moduleMap.meta.cards} 张卡片 / ${moduleMap.meta.layers} 层`,
+        title: t('overview.reading.step2Title'),
+        description: t('overview.reading.step2Desc')
+          .replace('{cards}', String(moduleMap.meta.cards))
+          .replace('{layers}', String(moduleMap.meta.layers)),
       })
     } else {
-      steps.push({ step: 2, title: '目录结构', description: '认识整体模块与组织' })
+      steps.push({ step: 2, title: t('overview.reading.step2Title'), description: t('overview.reading.step2Fallback') })
     }
     const entry = quickstart?.entrypoints?.[0]
     steps.push({
       step: 3,
-      title: '示例代码',
-      description: entry ? `从 ${entry} 开始读起` : '通过示例快速上手',
+      title: t('overview.reading.step3Title'),
+      description: entry ? t('overview.reading.step3Desc').replace('{entry}', entry) : t('overview.reading.step3Fallback'),
       filePath: entry,
     })
     const firstStep = learning?.steps?.[0]
     steps.push({
       step: 4,
-      title: '核心模块',
-      description: firstStep ? `首先看 ${firstStep.symbol}` : '深入关键概念与接口',
+      title: t('overview.reading.step4Title'),
+      description: firstStep ? t('overview.reading.step4Desc').replace('{symbol}', firstStep.symbol) : t('overview.reading.step4Fallback'),
       filePath: firstStep?.file_path,
     })
     return steps
-  }, [quickstart, moduleMap, learning])
+  }, [quickstart, moduleMap, learning, t])
 
   const repoMeta = useMemo(() => {
     const summary = repos.find((r) => r.repo_id === repoId)
@@ -144,9 +150,9 @@ export default function Overview() {
   }, [repos, repoId])
 
   const tasks = [
-    { text: '读完一句话定位', completed: !!arch?.summary || !loading },
-    { text: '理解它解决的核心问题', completed: !!arch?.patterns?.length },
-    { text: '按推荐顺序规划起步路径', completed: readingOrder.length >= 4 },
+    { text: t('overview.quest1'), completed: !!arch?.summary || !loading },
+    { text: t('overview.quest2'), completed: !!arch?.patterns?.length },
+    { text: t('overview.quest3'), completed: readingOrder.length >= 4 },
   ]
   const completedCount = tasks.filter((t) => t.completed).length
   const stageProgress = Math.round((completedCount / tasks.length) * 100)
@@ -156,7 +162,7 @@ export default function Overview() {
     <div className="ov-page">
       {repos.length > 1 && (
         <div className="ov-repo-row">
-          <span>当前仓库:</span>
+          <span>{t('overview.repoLabel')}</span>
           <select value={repoId} onChange={(e) => setRepoId(e.target.value)}>
             {repos.map((r) => (
               <option key={r.repo_id} value={r.repo_id}>{r.repo_id}</option>
@@ -170,16 +176,16 @@ export default function Overview() {
         <div className="ov-topbar">
           <button className="ov-back" onClick={() => navigate('/')}>
             <span className="ov-back-arrow">←</span>
-            <span>返回学习地图</span>
+            <span>{t('overview.backToMap')}</span>
           </button>
           <div className="ov-stage-title">
             <img className="ov-stage-sign" src={stageAssets.woodArrowSign} alt="" />
-            <h1><span>Stage 1</span><b>·</b><span>先看门道</span></h1>
-            <p className="ov-subtitle">在读代码之前，先搞清这个仓库是做什么的、解决什么问题、该从哪里开始看。</p>
+            <h1><span>{t('overview.stageTitle')}</span><b>·</b><span>{t('overview.stageName')}</span></h1>
+            <p className="ov-subtitle">{t('overview.stageSubtitle')}</p>
           </div>
           <div className="ov-progress-pill">
             <img className="ov-progress-avatar" src={overviewAssets.mentor} alt="" />
-            <span className="ov-progress-label">当前进度</span>
+            <span className="ov-progress-label">{t('overview.progressLabel')}</span>
             <div className="ov-progress-bar">
               {Array.from({ length: 6 }).map((_, i) => (
                 <span key={i} className={i < filledBlocks ? 'on' : ''} />
@@ -192,19 +198,19 @@ export default function Overview() {
         <div className="ov-hero-ground">
           <div className="ov-hero-mentor">
             <div className="ov-bubble">
-              <strong>嗨！欢迎来到学习地图的第一站。</strong>
-              <span>一切冒险的开始，先了解它，才能走得更远！</span>
+              <strong>{t('overview.mentorGreeting')}</strong>
+              <span>{t('overview.mentorText')}</span>
             </div>
-            <img className="ov-farm-mentor" src={overviewAssets.mentor} alt="田园探索导师" />
+            <img className="ov-farm-mentor" src={overviewAssets.mentor} alt={t('overview.mentorAlt')} />
           </div>
           <div className="ov-board">
             <img className="ov-board-art" src={overviewAssets.woodBoard} alt="" />
             <div className="ov-board-content">
-              <div className="ov-board-tag">一句话定位</div>
+              <div className="ov-board-tag">{t('overview.boardTag')}</div>
               <p className="ov-board-text">{positioning}</p>
               <div className="ov-board-meta">
-                <span>仓库 {repoMeta.fullName}</span>
-                <span>{repoMeta.nodes} 节点 · {repoMeta.commits} 提交</span>
+                <span>{repoMeta.fullName}</span>
+                <span>{repoMeta.nodes} {t('overview.boardMetaNodes')} · {repoMeta.commits} {t('overview.boardMetaCommits')}</span>
               </div>
             </div>
           </div>
@@ -216,7 +222,7 @@ export default function Overview() {
           <img className="ov-card-decor ov-card-decor--stones" src={overviewAssets.stones} alt="" />
           <header>
             <span className="ov-icon ov-icon--problem">◎</span>
-            <h2>它解决的核心问题</h2>
+            <h2>{t('overview.problemTitle')}</h2>
           </header>
           <p>{coreProblem}</p>
         </article>
@@ -225,7 +231,7 @@ export default function Overview() {
           <img className="ov-card-decor ov-card-decor--flowers" src={overviewAssets.flowers} alt="" />
           <header>
             <span className="ov-icon ov-icon--mental">✦</span>
-            <h2>三步建立整体心智模型</h2>
+            <h2>{t('overview.mentalTitle')}</h2>
           </header>
           <div className="ov-mental">
             {mentalModel.map((m) => (
@@ -242,7 +248,7 @@ export default function Overview() {
           <img className="ov-card-decor ov-card-decor--sign" src={overviewAssets.sign} alt="" />
           <header>
             <span className="ov-icon ov-icon--reading">↳</span>
-            <h2>推荐起步顺序</h2>
+            <h2>{t('overview.readingTitle')}</h2>
           </header>
           <ol className="ov-route">
             {readingOrder.map((s, i) => (
@@ -263,12 +269,12 @@ export default function Overview() {
           <img className="ov-card-decor ov-card-decor--grass" src={overviewAssets.grass} alt="" />
           <header>
             <span className="ov-icon ov-icon--gain">★</span>
-            <h2>看完这一页你会获得</h2>
+            <h2>{t('overview.gainTitle')}</h2>
           </header>
           <div className="ov-gain">
-            <div className="ov-gain-item"><img src={stageAssets.badgeMap} alt="" /><strong>知道仓库定位</strong></div>
-            <div className="ov-gain-item"><span>◎</span><strong>抓住核心问题</strong></div>
-            <div className="ov-gain-item"><img src={stageAssets.badgeClipboard} alt="" /><strong>建立整体认知</strong></div>
+            <div className="ov-gain-item"><img src={stageAssets.badgeMap} alt="" /><strong>{t('overview.gain1')}</strong></div>
+            <div className="ov-gain-item"><span>◎</span><strong>{t('overview.gain2')}</strong></div>
+            <div className="ov-gain-item"><img src={stageAssets.badgeClipboard} alt="" /><strong>{t('overview.gain3')}</strong></div>
           </div>
         </article>
 
@@ -276,13 +282,13 @@ export default function Overview() {
           <img className="ov-card-decor ov-card-decor--chest" src={overviewAssets.chest} alt="" />
           <header>
             <span className="ov-icon ov-icon--quest">▣</span>
-            <h2>本关任务 ({completedCount}/{tasks.length})</h2>
+            <h2>{t('overview.questTitle').replace('{completed}', String(completedCount)).replace('{total}', String(tasks.length))}</h2>
           </header>
           <ul className="ov-quest">
-            {tasks.map((t) => (
-              <li key={t.text} className={t.completed ? 'done' : ''}>
-                <span className="ov-quest-dot">{t.completed ? '✓' : ''}</span>
-                <span>{t.text}</span>
+            {tasks.map((task) => (
+              <li key={task.text} className={task.completed ? 'done' : ''}>
+                <span className="ov-quest-dot">{task.completed ? '✓' : ''}</span>
+                <span>{task.text}</span>
               </li>
             ))}
           </ul>
@@ -294,14 +300,14 @@ export default function Overview() {
           <div className="ov-next-badge">2</div>
           <header>
             <span className="ov-icon ov-icon--next">▶</span>
-            <h2>下一站：跑通主线</h2>
+            <h2>{t('overview.nextTitle')}</h2>
           </header>
-          <p>沿着主线流程，把项目从环境到运行完整跑通！</p>
+          <p>{t('overview.nextDesc')}</p>
           <button
             className="ov-cta"
             onClick={() => navigate(`/mainflow${repoId ? `?repo=${encodeURIComponent(repoId)}` : ''}`)}
           >
-            进入下一步 →
+            {t('overview.nextButton')}
           </button>
         </article>
       </section>

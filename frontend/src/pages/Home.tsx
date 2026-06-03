@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Progress, TextInput } from '@mantine/core'
 import { ArrowRight, Copy, Flame, Gift, Github, RefreshCcw, Star } from 'lucide-react'
 import { api, type RepoSummary } from '../services/api'
+import { useLanguage } from '../i18n/LanguageContext'
 import heroSkyBg from '../assets/pixel/backgrounds/home-hero-combined.png'
 import journeyScene from '../assets/pixel/backgrounds/home-journey-scene.png'
 import characterSheet from '../assets/pixel/characters/kenney-characters.png'
@@ -12,8 +13,8 @@ type Phase = 'idle' | 'analyzing' | 'done'
 
 type JourneyNode = {
   num: string
-  title: string
-  desc: string
+  titleKey: string
+  descKey: string
   path: string
   left: number
   top: number
@@ -26,8 +27,8 @@ const hotRepos = ['facebook/react', 'vuejs/core', 'microsoft/vscode', 'langchain
 const journeyNodes: JourneyNode[] = [
   {
     num: '1',
-    title: '先看门道',
-    desc: '快速了解仓库定位、技术栈与整体结构。',
+    titleKey: 'home.node1.title',
+    descKey: 'home.node1.desc',
     path: '/overview',
     left: 12,
     top: 54,
@@ -36,8 +37,8 @@ const journeyNodes: JourneyNode[] = [
   },
   {
     num: '2',
-    title: '跑通主线',
-    desc: '运行项目，理解主线执行流程与关键逻辑。',
+    titleKey: 'home.node2.title',
+    descKey: 'home.node2.desc',
     path: '/mainflow',
     left: 36,
     top: 39,
@@ -46,8 +47,8 @@ const journeyNodes: JourneyNode[] = [
   },
   {
     num: '3',
-    title: '拆它绝活',
-    desc: '分析核心模块，拆解关键实现技巧与设计亮点。',
+    titleKey: 'home.node3.title',
+    descKey: 'home.node3.desc',
     path: '/showcase',
     left: 60,
     top: 54,
@@ -56,8 +57,8 @@ const journeyNodes: JourneyNode[] = [
   },
   {
     num: '4',
-    title: '抄走一招',
-    desc: '提炼可复用的思路与技巧，拿去解决自己的问题。',
+    titleKey: 'home.node4.title',
+    descKey: 'home.node4.desc',
     path: '/takeaway',
     left: 84,
     top: 39,
@@ -67,14 +68,15 @@ const journeyNodes: JourneyNode[] = [
 ]
 
 const rewardCards = [
-  { icon: '🗺️', title: '全局视野', text: '快速建立对仓库的整体认知' },
-  { icon: '▶️', title: '跑通思维', text: '理解项目运行逻辑' },
-  { icon: '🎯', title: '硬核拆解', text: '掌握关键实现技巧' },
-  { icon: '💎', title: '迁移复用', text: '提炼可复用能力' },
+  { icon: '🗺️', titleKey: 'home.reward1.title', textKey: 'home.reward1.text' },
+  { icon: '▶️', titleKey: 'home.reward2.title', textKey: 'home.reward2.text' },
+  { icon: '🎯', titleKey: 'home.reward3.title', textKey: 'home.reward3.text' },
+  { icon: '💎', titleKey: 'home.reward4.title', textKey: 'home.reward4.text' },
 ]
 
 export default function Home() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [url, setUrl] = useState('')
   const [phase, setPhase] = useState<Phase>('idle')
   const [repos, setRepos] = useState<RepoSummary[]>([])
@@ -105,7 +107,7 @@ export default function Home() {
       }, 4000)
       window.setTimeout(() => window.clearInterval(poll), 180000)
     } catch (e) {
-      setError(e instanceof Error ? e.message : '分析失败，请稍后重试')
+      setError(e instanceof Error ? e.message : t('action.retry'))
       setPhase('idle')
     }
   }
@@ -118,13 +120,13 @@ export default function Home() {
     <main className="cg-home">
       <div className="cg-upper" style={{ backgroundImage: `url(${heroSkyBg})` }}>
         <div className="home-inner">
-          <section className="cg-hero" aria-label="CodeGraph 首页">
+          <section className="cg-hero" aria-label={t('home.heroAria')}>
             <div className="cg-tree-badge" />
-            <h1 className="cg-pixel-title" aria-label="CodeGraph 让每个老乡看懂代码！">
+            <h1 className="cg-pixel-title" aria-label={t('home.titleAria')}>
               <span className="cg-brand-word">CodeGraph</span>
-              <span className="cg-title-cn">让每个老乡<span>看懂代码！</span></span>
+              <span className="cg-title-cn">{t('home.title.cn')}<span>{t('home.title.cn2')}</span></span>
             </h1>
-            <p className="cg-subtitle">好仓库不是拿来硬啃的，带你彻底读懂一个 github 仓库</p>
+            <p className="cg-subtitle">{t('home.subtitle')}</p>
 
             <div className="cg-search-decor cg-search-decor-left" aria-hidden="true">
               <img src={overviewAssets.mentor} alt="" className="cg-decor-guide" />
@@ -142,12 +144,12 @@ export default function Home() {
                 value={url}
                 onChange={(e) => setUrl(e.currentTarget.value)}
                 onKeyDown={(e) => e.key === 'Enter' && startExplore()}
-                placeholder="粘贴 GitHub 仓库地址，例如：facebook/react"
+                placeholder={t('home.search.placeholder')}
                 leftSection={<Github size={30} strokeWidth={3} />}
                 rightSection={<Copy size={23} />}
                 disabled={phase === 'analyzing'}
                 className="cg-repo-input"
-                aria-label="GitHub 仓库地址"
+                aria-label={t('home.search.ariaLabel')}
               />
               <Button
                 className="cg-start-button"
@@ -156,26 +158,26 @@ export default function Home() {
                 onClick={() => startExplore()}
                 rightSection={<ArrowRight size={27} strokeWidth={3.2} />}
               >
-                开始探索
+                {t('home.startExplore')}
               </Button>
             </div>
 
             {error && <p className="cg-error">{error}</p>}
 
             <div className="cg-hot-row">
-              <span>热门仓库：</span>
+              <span>{t('home.hotRepos')}</span>
               {hotRepos.map((repo) => (
                 <button key={repo} type="button" onClick={() => useHotRepo(repo)}>
                   {repo}
                 </button>
               ))}
               <button type="button" className="cg-refresh" onClick={() => useHotRepo('facebook/react')}>
-                <RefreshCcw size={16} /> 换一换
+                <RefreshCcw size={16} /> {t('home.shuffle')}
               </button>
             </div>
           </section>
 
-          <section className="cg-journey-map" style={{ backgroundImage: `url(${journeyScene})` }} aria-label="学习路径图">
+          <section className="cg-journey-map" style={{ backgroundImage: `url(${journeyScene})` }} aria-label={t('home.journeyAria')}>
             <svg className="cg-journey-arrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
               <defs>
                 <marker id="cg-arrowhead" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
@@ -201,31 +203,31 @@ export default function Home() {
                 onClick={() => navigate(node.path)}
               >
                 <span className="cg-node-num">{node.num}</span>
-                <strong>{node.title}</strong>
-                <small>{node.desc}</small>
+                <strong>{t(node.titleKey)}</strong>
+                <small>{t(node.descKey)}</small>
               </button>
             ))}
           </section>
         </div>
       </div>
 
-      <section className="cg-lower" aria-label="学习信息">
+      <section className="cg-lower" aria-label={t('home.lowerAria')}>
         <div className="home-inner">
           <div className="cg-bottom-grid">
             <article className="cg-panel cg-recommend">
               <header>
                 <div>
                   <Star size={31} fill="#65b94c" />
-                  <h2>推荐仓库</h2>
+                  <h2>{t('home.recommend.title')}</h2>
                 </div>
-                <button type="button">查看更多 ›</button>
+                <button type="button">{t('action.viewMore')}</button>
               </header>
               <div className="cg-repo-list">
                 <button type="button" onClick={() => useHotRepo('facebook/react')}>
                   <span className="cg-repo-icon react">⚛</span>
                   <span>
                     <strong>facebook / react</strong>
-                    <small>用于构建用户界面的 JavaScript 库</small>
+                    <small>{t('home.recommend.react')}</small>
                   </span>
                   <em><Flame size={15} fill="#ff7a2e" />196.7k</em>
                 </button>
@@ -233,7 +235,7 @@ export default function Home() {
                   <span className="cg-repo-icon vscode">⌁</span>
                   <span>
                     <strong>microsoft / vscode</strong>
-                    <small>开源的轻量级代码编辑器</small>
+                    <small>{t('home.recommend.vscode')}</small>
                   </span>
                   <em><Flame size={15} fill="#ff7a2e" />83.2k</em>
                 </button>
@@ -244,15 +246,15 @@ export default function Home() {
               <header>
                 <div>
                   <Gift size={29} color="#cf7826" />
-                  <h2>你将获得</h2>
+                  <h2>{t('home.rewards.title')}</h2>
                 </div>
               </header>
               <div className="cg-reward-grid">
                 {rewardCards.map((card) => (
-                  <div key={card.title} className="cg-reward-card">
+                  <div key={card.titleKey} className="cg-reward-card">
                     <span>{card.icon}</span>
-                    <strong>{card.title}</strong>
-                    <small>{card.text}</small>
+                    <strong>{t(card.titleKey)}</strong>
+                    <small>{t(card.textKey)}</small>
                   </div>
                 ))}
               </div>
@@ -262,16 +264,16 @@ export default function Home() {
               <header>
                 <div>
                   <span className="cg-flag">⚑</span>
-                  <h2>当前进度</h2>
+                  <h2>{t('home.progress.title')}</h2>
                 </div>
-                <button type="button" onClick={() => navigate('/overview')}>查看详情 ›</button>
+                <button type="button" onClick={() => navigate('/overview')}>{t('action.viewDetails')}</button>
               </header>
               <div className="cg-progress-main">
                 <div className="cg-avatar" style={{ backgroundImage: `url(${characterSheet})` }} />
                 <div className="cg-progress-copy">
                   <div className="cg-progress-meta">
-                    <span>总体进度</span>
-                    <span>已完成 2 / 4 步</span>
+                    <span>{t('home.progress.overall')}</span>
+                    <span>{t('home.progress.steps')}</span>
                   </div>
                   <div className="cg-progress-number">
                     <strong>42%</strong>
@@ -281,18 +283,18 @@ export default function Home() {
               </div>
               <div className="cg-current-stage">
                 <div>
-                  <strong>当前阶段：跑通主线</strong>
+                  <strong>{t('home.progress.currentStage')}</strong>
                   <p>
                     {phase === 'analyzing'
-                      ? '正在为你生成仓库学习路线...'
+                      ? t('home.progress.analyzing')
                       : phase === 'done' && newRepoId
-                        ? '路线已生成，可以继续学习。'
-                        : '正在理解主线执行流程与关键逻辑'}
+                        ? t('home.progress.done')
+                        : t('home.progress.idle')}
                   </p>
-                  <small>预计 25 分钟可完成</small>
+                  <small>{t('home.progress.eta')}</small>
                 </div>
                 <Button className="cg-continue-button" onClick={() => navigate('/mainflow')}>
-                  继续学习
+                  {t('action.continue')}
                 </Button>
               </div>
             </article>

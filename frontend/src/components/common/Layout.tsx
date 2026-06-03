@@ -6,21 +6,23 @@ import { HelpCircle, Home, Map, MessageCircle, Pickaxe, Settings, Signpost, Swor
 import { api } from '../../services/api'
 import ChatSidebar from '../chat/ChatSidebar'
 import PixelLogo from './PixelLogo'
+import LanguageToggle from './LanguageToggle'
+import { useLanguage } from '../../i18n/LanguageContext'
 import characterSheet from '../../assets/pixel/characters/kenney-characters.png'
 
 const mainRoutes = [
-  { path: '/', label: '首页', icon: Home, end: true },
-  { path: '/map', label: '学习地图', icon: Map },
-  { path: '/overview', label: '先看门道', icon: Signpost, badge: '1' },
-  { path: '/mainflow', label: '跑通主线', icon: Trophy, badge: '2' },
-  { path: '/showcase', label: '拆它绝活', icon: Swords, badge: '3' },
-  { path: '/takeaway', label: '抄走一招', icon: Pickaxe, badge: '4' },
+  { path: '/', labelKey: 'nav.home', icon: Home, end: true },
+  { path: '/map', labelKey: 'nav.map', icon: Map },
+  { path: '/overview', labelKey: 'nav.overview', icon: Signpost, badge: '1' },
+  { path: '/mainflow', labelKey: 'nav.mainflow', icon: Trophy, badge: '2' },
+  { path: '/showcase', labelKey: 'nav.showcase', icon: Swords, badge: '3' },
+  { path: '/takeaway', labelKey: 'nav.takeaway', icon: Pickaxe, badge: '4' },
 ]
 
 const supportRoutes = [
-  { label: '设置', icon: Settings },
-  { label: '帮助中心', icon: HelpCircle },
-  { label: '反馈建议', icon: MessageCircle },
+  { labelKey: 'nav.settings', icon: Settings },
+  { labelKey: 'nav.help', icon: HelpCircle },
+  { labelKey: 'nav.feedback', icon: MessageCircle },
 ]
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -28,6 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [searchParams] = useSearchParams()
   const [activeRepo, setActiveRepo] = useState('')
   const [opened, { toggle, close }] = useDisclosure()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const fromUrl = searchParams.get('repo')
@@ -53,13 +56,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Text className="cg-brand-name">CodeGraph</Text>
           </div>
 
-          <nav className="cg-main-nav" aria-label="主导航">
-            {mainRoutes.map(({ path, label, icon: Icon, end, badge }) => {
+          <nav className="cg-main-nav" aria-label={t('nav.mainNavLabel')}>
+            {mainRoutes.map(({ path, labelKey, icon: Icon, end, badge }) => {
               const active = end ? location.pathname === path : location.pathname === path
               return (
                 <RouterNavLink key={path} to={path} onClick={close} className={active ? 'cg-nav-item is-active' : 'cg-nav-item'}>
                   <Icon size={30} strokeWidth={2.4} />
-                  <span>{label}</span>
+                  <span>{t(labelKey)}</span>
                   {badge && <em>{badge}</em>}
                 </RouterNavLink>
               )
@@ -68,13 +71,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="cg-sidebar-divider" />
 
-          <nav className="cg-support-nav" aria-label="辅助导航">
-            {supportRoutes.map(({ label, icon: Icon }) => (
-              <button key={label} type="button" className="cg-support-item">
+          <nav className="cg-support-nav" aria-label={t('nav.supportNavLabel')}>
+            {supportRoutes.map(({ labelKey, icon: Icon }) => (
+              <button key={labelKey} type="button" className="cg-support-item">
                 <Icon size={27} />
-                <span>{label}</span>
+                <span>{t(labelKey)}</span>
               </button>
             ))}
+            <LanguageToggle />
           </nav>
 
           <div className="cg-user-card">
@@ -82,7 +86,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div className="cg-user-avatar" style={{ backgroundImage: `url(${characterSheet})` }} />
               <div>
                 <strong>coder_01</strong>
-                <span>老乡，继续进步！</span>
+                <span>{t('user.greeting')}</span>
               </div>
             </div>
             <div className="cg-xp">💎 1280 / 2000 XP</div>

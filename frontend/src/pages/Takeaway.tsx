@@ -1,28 +1,29 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, BookOpen, CheckCircle2, Code2, RefreshCcw, Star, Trophy } from 'lucide-react'
 import { stageAssets, stageBackgrounds, overviewAssets } from '../assets/pixel/stage-library'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const patterns = [
   {
     icon: '🧠',
     title: '1 Hot / cold memory layering',
-    sub: '冷热记忆分层',
-    body: '把近期对话放在热存，长期信息放在冷存，按需检索，降低成本并提升相关性。',
-    scene: '需要长期记住偏好、历史与对话线索的助手。',
+    subKey: 'takeaway.pattern1.sub',
+    bodyKey: 'takeaway.pattern1.body',
+    sceneKey: 'takeaway.pattern1.scene',
   },
   {
     icon: '💾',
     title: '2 Persistent stateful agent entity',
-    sub: '持久化有状态的智能体实体',
-    body: '每个智能体都有自己的配置、记忆、工具权限与状态，持久化存储，保证连续性。',
-    scene: '多轮连续提交互、需要记住用户习惯和上下文的场景。',
+    subKey: 'takeaway.pattern2.sub',
+    bodyKey: 'takeaway.pattern2.body',
+    sceneKey: 'takeaway.pattern2.scene',
   },
   {
     icon: '🔁',
     title: '3 Tool call + state update loop',
-    sub: '工具调用 + 状态更新循环',
-    body: '通过工具获取外部能力，并将结果写回状态/记忆，形成行动到更新再行动的闭环。',
-    scene: '需要执行任务、检索外部数据或触发流程的智能体。',
+    subKey: 'takeaway.pattern3.sub',
+    bodyKey: 'takeaway.pattern3.body',
+    sceneKey: 'takeaway.pattern3.scene',
   },
 ]
 
@@ -49,75 +50,76 @@ const code = [
 
 export default function Takeaway() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   return (
     <div className="tw-page">
       <section className="tw-hero" style={{ backgroundImage: `url(${stageBackgrounds.takeaway})` }}>
         <button type="button" className="tw-back" onClick={() => navigate('/map')}>
-          <ArrowLeft size={18} /> 返回学习地图
+          <ArrowLeft size={18} /> {t('takeaway.backToMap')}
         </button>
         <div className="tw-progress">
           <img src={stageAssets.mentorTrophy} alt="" />
-          <div><strong>当前进度</strong><span><i /></span></div>
+          <div><strong>{t('takeaway.progressLabel')}</strong><span><i /></span></div>
           <b>100%</b>
         </div>
-        <h1>Stage 4 · 抄走一招</h1>
-        <p>真正的收获不是看过，而是能把它的方法带走，变成你自己的能力。</p>
+        <h1>{t('takeaway.heroTitle')}</h1>
+        <p>{t('takeaway.heroSubtitle')}</p>
         <img src={stageAssets.mentorTrophy} alt="" className="tw-mentor" />
-        <div className="tw-bubble">把有用的装进背包，下一段旅程就能用上！</div>
+        <div className="tw-bubble">{t('takeaway.bubble')}</div>
         <div className="tw-board">
           <img src={overviewAssets.woodBoard} alt="" />
-          <strong>这一站带走什么</strong>
-          <p>这不是某个仓库的特定技巧，而是可以复用的智能体构建模式。把它们带走，才是真正的收获。</p>
+          <strong>{t('takeaway.boardTitle')}</strong>
+          <p>{t('takeaway.boardText')}</p>
         </div>
       </section>
 
       <main className="tw-content">
         <section className="tw-patterns">
-          <header><Star size={22} fill="#ffd966" /><h2>三大可复用构建模式（来自 letta-ai/letta）</h2></header>
+          <header><Star size={22} fill="#ffd966" /><h2>{t('takeaway.patternsTitle')}</h2></header>
           <div className="tw-pattern-grid">
             {patterns.map((item) => (
               <article key={item.title} className="tw-pattern-card">
-                <div className="tw-pattern-title"><span>{item.icon}</span><div><strong>{item.title}</strong><small>{item.sub}</small></div></div>
-                <p>{item.body}</p>
-                <em>适合场景：{item.scene}</em>
+                <div className="tw-pattern-title"><span>{item.icon}</span><div><strong>{item.title}</strong><small>{t(item.subKey)}</small></div></div>
+                <p>{t(item.bodyKey)}</p>
+                <em>{t('takeaway.bestFor')}{t(item.sceneKey)}</em>
               </article>
             ))}
           </div>
           <div className="tw-scenario-grid">
-            <article className="tw-good"><h3>适用场景</h3><p>长期存在的智能体、多轮复杂任务与工作流、需要个性化与长期记忆的场景。</p></article>
-            <article className="tw-bad"><h3>不适用场景</h3><p>一次性问答、极其简单的脚本命令工具、无需记忆或状态的临时任务。</p></article>
+            <article className="tw-good"><h3>{t('takeaway.goodTitle')}</h3><p>{t('takeaway.goodText')}</p></article>
+            <article className="tw-bad"><h3>{t('takeaway.badTitle')}</h3><p>{t('takeaway.badText')}</p></article>
           </div>
         </section>
 
         <aside className="tw-code">
-          <header><Code2 size={22} /><h2>最小实现片段</h2></header>
+          <header><Code2 size={22} /><h2>{t('takeaway.codeTitle')}</h2></header>
           <pre>{code.map((line, index) => `${String(index + 1).padStart(2, '0')}  ${line}`).join('\n')}</pre>
         </aside>
 
         <section className="tw-rewards">
-          <header><Star size={22} fill="#ffd966" /><h2>你已经收获</h2></header>
-          {['可复用模式 x3', '最小实现片段', '适用边界判断', '工程化视角'].map((item) => <span key={item}>{item}</span>)}
+          <header><Star size={22} fill="#ffd966" /><h2>{t('takeaway.rewardsTitle')}</h2></header>
+          {[t('takeaway.reward1'), t('takeaway.reward2'), t('takeaway.reward3'), t('takeaway.reward4')].map((item) => <span key={item}>{item}</span>)}
         </section>
 
         <section className="tw-complete">
           <div>
             <Trophy size={28} />
-            <strong>旅程完成</strong>
+            <strong>{t('takeaway.completeTitle')}</strong>
             <b>100%</b>
-            <p>你已经从看门道走到能带走一招！</p>
+            <p>{t('takeaway.completeText')}</p>
           </div>
           <img src={stageAssets.mentorTrophy} alt="" />
         </section>
 
         <section className="tw-actions">
-          <button type="button" onClick={() => navigate('/map')}><BookOpen size={20} /> 返回学习地图</button>
-          <button type="button" onClick={() => navigate('/')}><RefreshCcw size={20} /> 再换一个仓库</button>
+          <button type="button" onClick={() => navigate('/map')}><BookOpen size={20} /> {t('takeaway.backToMap')}</button>
+          <button type="button" onClick={() => navigate('/')}><RefreshCcw size={20} /> {t('takeaway.tryAnother')}</button>
         </section>
 
         <section className="tw-tasks">
-          <header><h2>本关任务（3/3）</h2></header>
-          {['理解三种可复用模式', '知道什么时候该用/不该用', '能把模式迁移到自己的项目'].map((task) => (
+          <header><h2>{t('takeaway.tasksTitle')}</h2></header>
+          {[t('takeaway.task1'), t('takeaway.task2'), t('takeaway.task3')].map((task) => (
             <p key={task}><CheckCircle2 size={17} />{task}</p>
           ))}
         </section>

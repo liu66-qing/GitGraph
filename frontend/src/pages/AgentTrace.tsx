@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Container, Title, Card, Text, Badge, Group, Stack, Loader, Table } from '@mantine/core';
 import { Activity, Zap, GitBranch, Clock } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 import './AgentTrace.css';
 
 interface ToolCall {
@@ -28,6 +29,7 @@ interface ToolStats {
 }
 
 export default function AgentTrace() {
+  const { t } = useLanguage();
   const [toolStats, setToolStats] = useState<Record<string, ToolStats>>({});
   const [topTools, setTopTools] = useState<ToolStats[]>([]);
   const [dependencyGraph, setDependencyGraph] = useState<Record<string, string[]>>({});
@@ -89,7 +91,7 @@ export default function AgentTrace() {
             <div className="flow-stage">
               <div className="stage-card stage-overview">
                 <Text fw={700} size="sm">OverviewAgent</Text>
-                <Text size="xs" c="dimmed">先看门道</Text>
+                <Text size="xs" c="dimmed">{t('agentTrace.overview.tagline')}</Text>
               </div>
             </div>
 
@@ -98,14 +100,14 @@ export default function AgentTrace() {
             <div className="flow-stage flow-parallel">
               <div className="stage-card stage-mainflow">
                 <Text fw={700} size="sm">MainFlowAgent</Text>
-                <Text size="xs" c="dimmed">跑通主线</Text>
+                <Text size="xs" c="dimmed">{t('agentTrace.mainflow.tagline')}</Text>
               </div>
               <div className="parallel-divider">
                 <Text size="xs" c="dimmed">parallel</Text>
               </div>
               <div className="stage-card stage-showcase">
                 <Text fw={700} size="sm">ShowcaseAgent</Text>
-                <Text size="xs" c="dimmed">拆它绝活</Text>
+                <Text size="xs" c="dimmed">{t('agentTrace.showcase.tagline')}</Text>
               </div>
             </div>
 
@@ -114,7 +116,7 @@ export default function AgentTrace() {
             <div className="flow-stage">
               <div className="stage-card stage-takeaway">
                 <Text fw={700} size="sm">TakeawayAgent</Text>
-                <Text size="xs" c="dimmed">抄走一招</Text>
+                <Text size="xs" c="dimmed">{t('agentTrace.takeaway.tagline')}</Text>
               </div>
             </div>
           </div>
